@@ -1,10 +1,8 @@
 import React from "react";
 import "./settingPanel.css";
 import ThemeList from "../../../components/readerSettings/themeList";
-import SliderList from "../../../components/readerSettings/sliderList";
 // import DropdownList from "../../../components/readerSettings/dropdownList";
 import IconChoiceList from "../../../components/readerSettings/iconChoiceList";
-import ModeControl from "../../../components/readerSettings/modeControl";
 import SettingSwitch from "../../../components/readerSettings/settingSwitch";
 import { SettingPanelProps, SettingPanelState } from "./interface";
 import { Trans } from "react-i18next";
@@ -65,7 +63,7 @@ class SettingPanel extends React.Component<
               title: "Font size",
             }}
           /> */}
-{/* 
+          {/* 
           <SliderList
             {...{
               maxValue: 80,

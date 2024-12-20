@@ -21,7 +21,7 @@ import { stopSpeak, underlinesWords } from "../../../utils/readUtils/handleSpeak
 declare var window: any;
 let originalReadingELement: HTMLElement | null = null; // Élément actuellement en lecture
 let originalReadingHTML: string | null = null; // HTML original de l'élément actuellement lu
-let cancelReading = false; // Indique si une lecture doit être annulé
+// let cancelReading = false; // Indique si une lecture doit être annulé
 class PopupOption extends React.Component<PopupOptionProps> {
 
 
@@ -267,7 +267,7 @@ class PopupOption extends React.Component<PopupOptionProps> {
     if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
       const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
       console.log("Annulation de la lecture en cours...");
-      cancelReading = true; // Indique que la lecture en cours doit être annulée
+      // cancelReading = true; // Indique que la lecture en cours doit être annulée
       window.speechSynthesis.cancel(); // Arrête la synthèse vocale
 
 
@@ -280,7 +280,7 @@ class PopupOption extends React.Component<PopupOptionProps> {
 
 
     // Réinitialise le drapeau d'annulation
-    cancelReading = false;
+    // cancelReading = false;
 
     const text = selection.toString(); // Texte sélectionné
     if (element) {

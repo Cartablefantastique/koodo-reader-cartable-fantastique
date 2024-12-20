@@ -13,7 +13,6 @@ import StyleUtil from "./utils/readUtils/styleUtil";
 // import StorageUtil from "./utils/serviceUtils/storageUtil";
 import { initSystemFont, initTheme } from "./utils/serviceUtils/launchUtil";
 import * as serviceWorker from './serviceWorker';
-declare var window: any;
 initTheme();
 initSystemFont();
 

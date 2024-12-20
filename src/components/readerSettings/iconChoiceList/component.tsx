@@ -154,10 +154,6 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
       ]
     }
   ]
-  constructor(props: IconChoiceListProps) {
-    super(props);
-  }
-
 
   componentDidMount() {
     this.loadGoogleFonts(["Arial", "Verdana"]);
@@ -213,16 +209,16 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
       case "letterSpacing":
         let currentLetterSpacing = StorageUtil.getReaderConfig(option)
         let newLetterSpacing = currentLetterSpacing
-        if ((value === "Add" && currentLetterSpacing < 20) || (value === "Reduce" && currentLetterSpacing > 0) ) {
+        if ((value === "Add" && currentLetterSpacing < 20) || (value === "Reduce" && currentLetterSpacing > 0)) {
           newLetterSpacing = value === "Add" ? newLetterSpacing + 2 : newLetterSpacing - 2
           StorageUtil.setReaderConfig(option, newLetterSpacing);
         }
-        console.log(`${option} : ${newLetterSpacing >= 0 && newLetterSpacing <= 20 ? "On change la taille et " : "On ne change pas la taille "} Nouvelle taille : ${newLetterSpacing} et Ancienne taille : ${currentLetterSpacing}`)      
-      break;
+        console.log(`${option} : ${newLetterSpacing >= 0 && newLetterSpacing <= 20 ? "On change la taille et " : "On ne change pas la taille "} Nouvelle taille : ${newLetterSpacing} et Ancienne taille : ${currentLetterSpacing}`)
+        break;
       case "margin":
         let currentMargin = StorageUtil.getReaderConfig(option)
         let newMargin = currentMargin
-        if ((value === "Add" && currentMargin < 80) || (value === "Reduce" && currentMargin > 0) ) {
+        if ((value === "Add" && currentMargin < 80) || (value === "Reduce" && currentMargin > 0)) {
           newMargin = value === "Add" ? newMargin + 10 : newMargin - 10
           StorageUtil.setReaderConfig(option, newMargin);
         }
@@ -232,7 +228,7 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
       case "scale":
         let currentScale = StorageUtil.getReaderConfig(option)
         let newScale = currentScale
-        if ((value === "Add" && currentScale < 3) || (value === "Reduce" && currentScale > 0.5) ) {
+        if ((value === "Add" && currentScale < 3) || (value === "Reduce" && currentScale > 0.5)) {
           newScale = value === "Add" ? newScale + 0.5 : newScale - 0.5
           StorageUtil.setReaderConfig(option, newScale);
         }

@@ -9,6 +9,12 @@ class StorageUtil {
     readerConfig[key] = value;
     localStorage.setItem("readerConfig", JSON.stringify(readerConfig));
   }
+  static resetReaderConfig(key: string) {
+    let readerConfig = JSON.parse(localStorage.getItem("readerConfig")!) || {};
+    readerConfig[key] = null;
+    localStorage.setItem("readerConfig", JSON.stringify(readerConfig));
+  }
+
 }
 
 export default StorageUtil;

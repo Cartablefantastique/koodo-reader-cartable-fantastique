@@ -391,14 +391,13 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
 
   changeHiglightLines = (paragraphs) => {
     try {
-      const randomColors = StorageUtil.getReaderConfig("highlightColors") || "[]";
+      const randomColors = StorageUtil.getReaderConfig("baseColors") || "[]";
       const colors = JSON.parse(randomColors);
       let colorIndex = 0;
       this.removeTagsFromParagraph(paragraphs)
       paragraphs.forEach((p) => {
 
         let coloredHTML = "";
-
 
         // Trouver les lignes correspondant à ce paragraphe
         const lines = this.selectLines(p);
@@ -409,7 +408,15 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
 
           // Ajouter chaque ligne colorée
           coloredHTML += `<span class="highlightLine" style= "
-          
+           font-size: ${StorageUtil.getReaderConfig("fontSize") || "17px"};
+          line-height: ${StorageUtil.getReaderConfig("lineHeight") || "1.25"};
+          font-family: ${StorageUtil.getReaderConfig("fontFamily") || ""};
+          letter-spacing: ${StorageUtil.getReaderConfig("letterSpacing") || ""};
+         
+      word-spacing: ${StorageUtil.getReaderConfig("wordSpacing")
+            || ""};
+      text-align: ${StorageUtil.getReaderConfig("textAlign")
+            || ""}; 
             background-color: ${color}">${line}</span>`;
         });
 
@@ -443,6 +450,13 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
           style="
           font-size: ${StorageUtil.getReaderConfig("fontSize") || "17px"};
           line-height: ${StorageUtil.getReaderConfig("lineHeight") || "1.25"};
+          font-family: ${StorageUtil.getReaderConfig("fontFamily") || ""};
+          letter-spacing: ${StorageUtil.getReaderConfig("letterSpacing") || ""};
+         
+      word-spacing: ${StorageUtil.getReaderConfig("wordSpacing")
+            || ""};
+      text-align: ${StorageUtil.getReaderConfig("textAlign")
+            || ""}; 
           color: ${color};">${line}</span>`;
         });
 

@@ -128,6 +128,7 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
 
   removeHighlightLineStyle(clearStyles: string) {
     StorageUtil.setReaderConfig("highlightLines", JSON.stringify(clearStyles));
+    StorageUtil.setReaderConfig("changeColorsTriggered", "false");
     const event = new Event("removeStyles");
     window.dispatchEvent(event);
   }

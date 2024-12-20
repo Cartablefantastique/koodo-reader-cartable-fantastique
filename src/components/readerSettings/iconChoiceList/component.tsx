@@ -169,6 +169,7 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
   }
 
   handleView(event: any, option: string, value: string) {
+
     switch (option) {
       case "fontSize":
         let currentFontSize = StorageUtil.getReaderConfig(option)
@@ -176,7 +177,12 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
         if ((value === "Add" && currentFontSize < 40) || (value === "Reduce" && currentFontSize > 10)) {
           newFontSize = value === "Add" ? newFontSize + 5 : newFontSize - 5
           StorageUtil.setReaderConfig(option, newFontSize);
+
         }
+        if (newFontSize === "Add" || newFontSize === "Reduce") {
+          StorageUtil.resetReaderConfig(option)
+        }
+
         console.log(`${option} : ${newFontSize >= 10 && newFontSize <= 40 ? "On change la taille et " : "On ne change pas la taille "} Nouvelle taille : ${newFontSize} et Ancienne taille : ${currentFontSize}`)
         break;
       case "wordSpacing":
@@ -186,6 +192,7 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
           newWordSpacing = value === "Add" ? newWordSpacing + 5 : newWordSpacing - 5
           StorageUtil.setReaderConfig(option, newWordSpacing);
         }
+        StorageUtil.resetReaderConfig(option)
         console.log(`${option} : ${newWordSpacing >= 0 && newWordSpacing <= 20 ? "On change la taille et " : "On ne change pas la taille "} Nouvelle taille : ${newWordSpacing} et Ancienne taille : ${currentWordSpacing}`)
         break;
       case "fontFamily":
@@ -200,6 +207,10 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
           newLineHeight = value === "Add" ? newLineHeight += 0.5 : newLineHeight -= 0.5
           StorageUtil.setReaderConfig(option, newLineHeight);
         }
+        if (newLineHeight === "Add" || newLineHeight === "Reduce") {
+          StorageUtil.resetReaderConfig(option)
+        }
+
         console.log(`${option} : ${newLineHeight >= 0 && newLineHeight <= 20 ? "On change la taille et " : "On ne change pas la taille "} Nouvelle taille : ${newLineHeight} et Ancienne taille : ${currentLineHeight}`)
         break;
       case "textAlign":
@@ -213,6 +224,9 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
           newLetterSpacing = value === "Add" ? newLetterSpacing + 2 : newLetterSpacing - 2
           StorageUtil.setReaderConfig(option, newLetterSpacing);
         }
+        if (newLetterSpacing === "Add" || newLetterSpacing === "Reduce") {
+          StorageUtil.resetReaderConfig(option)
+        }
         console.log(`${option} : ${newLetterSpacing >= 0 && newLetterSpacing <= 20 ? "On change la taille et " : "On ne change pas la taille "} Nouvelle taille : ${newLetterSpacing} et Ancienne taille : ${currentLetterSpacing}`)
         break;
       case "margin":
@@ -222,30 +236,37 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
           newMargin = value === "Add" ? newMargin + 10 : newMargin - 10
           StorageUtil.setReaderConfig(option, newMargin);
         }
+        if (newMargin === "Add" || newMargin === "Reduce") {
+          StorageUtil.resetReaderConfig(option)
+        }
+
         console.log(`${option} : ${newMargin >= 0 && newMargin <= 80 ? "On change la taille et " : "On ne change pas la taille "} Nouvelle taille : ${newMargin} et Ancienne taille : ${currentMargin}`)
         BookUtil.reloadBooks();
         return;
-      case "scale":
-        let currentScale = StorageUtil.getReaderConfig(option)
-        let newScale = currentScale
-        if ((value === "Add" && currentScale < 3) || (value === "Reduce" && currentScale > 0.5)) {
-          newScale = value === "Add" ? newScale + 0.5 : newScale - 0.5
-          StorageUtil.setReaderConfig(option, newScale);
-        }
-        console.log(`${option} : ${newScale >= 0.5 && newScale <= 3 ? "On change la taille et " : "On ne change pas la taille "} Nouvelle taille : ${newScale} et Ancienne taille : ${currentScale}`)
-        BookUtil.reloadBooks();
-        return;
-      default:
-        break;
+      // case "scale":
+      //   let currentScale = StorageUtil.getReaderConfig(option)
+      //   let newScale = currentScale
+      //   if ((value === "Add" && currentScale < 3) || (value === "Reduce" && currentScale > 0.5)) {
+      //     newScale = value === "Add" ? newScale + 0.5 : newScale - 0.5
+      //     StorageUtil.setReaderConfig(option, newScale);
+      //   }
+      //   console.log("option sclae", option)
+      //   if (newScale === "Add" || newScale === "Reduce") {
+      //     StorageUtil.resetReaderConfig(option)
+      //   }
+      //   console.log(`${option} : ${newScale >= 0.5 && newScale <= 3 ? "On change la taille et " : "On ne change pas la taille "} Nouvelle taille : ${newScale} et Ancienne taille : ${currentScale}`)
+      //   // BookUtil.reloadBooks();
+      //   return;
+      // default:
+      //   break;
     }
-    StorageUtil.setReaderConfig("changeColorsTriggered", "false");
     const changeColorsTriggered = StorageUtil.getReaderConfig("changeColorsTriggered") === "true";
-    if (changeColorsTriggered === false) {
-      console.log("Calling renderBookFunc");
-      this.props.renderBookFunc();
+    if (changeColorsTriggered) {
+      this.props.renderBookWithLineColorsFunc();
     } else {
-      console.warn("renderBookFunc is not defined in props");
+      this.props.renderBookFunc();
     }
+
   }
 
   render() {
@@ -268,6 +289,7 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
           ))}
         </li>
       ));
+
     };
 
     return (

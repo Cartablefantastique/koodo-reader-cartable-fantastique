@@ -16,7 +16,7 @@ import { getIframeDoc } from "../../../utils/serviceUtils/docUtil";
 import { openExternalUrl } from "../../../utils/serviceUtils/urlUtil";
 import { isElectron } from "react-device-detect";
 import { createOneNote } from "../../../utils/serviceUtils/noteUtil";
-import { stopSpeak, underlinesWords, originalReadingElement } from "../../../utils/readUtils/handleSpeak";
+import { stopSpeak, underlinesWords } from "../../../utils/readUtils/handleSpeak";
 
 declare var window: any;
 let originalReadingELement: HTMLElement | null = null; // Élément actuellement en lecture

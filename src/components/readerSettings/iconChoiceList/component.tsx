@@ -14,11 +14,24 @@ import iconAddFontSize from '../../../assets/icons/agrandir_police.png';
 import iconReduceFontSize from '../../../assets/icons/reduire_police.png';
 import iconAdd from '../../../assets/icons/augmenter.png';
 import iconReduce from '../../../assets/icons/reduire.png';
+import iconDefault from '../../../assets/icons/style_CF.jpg';
 
 class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceListState> {
   iconChoiceList = [
     {
       id: 1,
+      title: "Reset Default",
+      value: "resetDefault",
+      icons: [
+        {
+          value: "resetDefault",
+          src: iconDefault,
+          alt: "Paramètres par défaut"
+        }
+      ]
+    },
+    {
+      id: 2,
       title: "Font size",
       value: "fontSize",
       icons: [
@@ -35,7 +48,7 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
       ]
     },
     {
-      id: 2,
+      id: 3,
       title: "Font family",
       value: "fontFamily",
       icons: [
@@ -52,7 +65,7 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
       ]
     },
     {
-      id: 3,
+      id: 4,
       title: "Line height",
       value: "lineHeight",
       icons: [
@@ -69,7 +82,7 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
       ]
     },
     {
-      id: 4,
+      id: 5,
       title: "Text alignment",
       value: "textAlign",
       icons: [
@@ -86,7 +99,7 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
       ]
     },
     {
-      id: 5,
+      id: 6,
       title: "Word spacing",
       value: "wordSpacing",
       icons: [
@@ -103,7 +116,7 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
       ]
     },
     {
-      id: 6,
+      id: 7,
       title: "Letter spacing",
       value: "letterSpacing",
       icons: [
@@ -120,7 +133,7 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
       ]
     },
     {
-      id: 7,
+      id: 8,
       title: "Margin",
       value: "margin",
       icons: [
@@ -137,7 +150,7 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
       ]
     },
     {
-      id: 8,
+      id: 9,
       title: "Page width",
       value: "scale",
       icons: [
@@ -243,22 +256,24 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
         console.log(`${option} : ${newMargin >= 0 && newMargin <= 80 ? "On change la taille et " : "On ne change pas la taille "} Nouvelle taille : ${newMargin} et Ancienne taille : ${currentMargin}`)
         BookUtil.reloadBooks();
         return;
-      // case "scale":
-      //   let currentScale = StorageUtil.getReaderConfig(option)
-      //   let newScale = currentScale
-      //   if ((value === "Add" && currentScale < 3) || (value === "Reduce" && currentScale > 0.5)) {
-      //     newScale = value === "Add" ? newScale + 0.5 : newScale - 0.5
-      //     StorageUtil.setReaderConfig(option, newScale);
-      //   }
-      //   console.log("option sclae", option)
-      //   if (newScale === "Add" || newScale === "Reduce") {
-      //     StorageUtil.resetReaderConfig(option)
-      //   }
-      //   console.log(`${option} : ${newScale >= 0.5 && newScale <= 3 ? "On change la taille et " : "On ne change pas la taille "} Nouvelle taille : ${newScale} et Ancienne taille : ${currentScale}`)
-      //   // BookUtil.reloadBooks();
-      //   return;
-      // default:
-      //   break;
+      case "scale":
+        let currentScale = StorageUtil.getReaderConfig(option)
+        let newScale = currentScale
+        if ((value === "Add" && currentScale < 3) || (value === "Reduce" && currentScale > 0.5)) {
+          newScale = value === "Add" ? newScale + 0.5 : newScale - 0.5
+          StorageUtil.setReaderConfig(option, newScale);
+        }
+        // console.log("option sclae", option)
+        // if (newScale === "Add" || newScale === "Reduce") {
+        //   StorageUtil.resetReaderConfig(option)
+        // }
+        console.log(`${option} : ${newScale >= 0.5 && newScale <= 3 ? "On change la taille et " : "On ne change pas la taille "} Nouvelle taille : ${newScale} et Ancienne taille : ${currentScale}`)
+        BookUtil.reloadBooks();
+        return;
+      default:
+        StorageUtil.defaultReaderConfig()
+        BookUtil.reloadBooks()
+        return;
     }
     const changeColorsTriggered = StorageUtil.getReaderConfig("changeColorsTriggered") === "true";
     if (changeColorsTriggered) {
@@ -277,16 +292,19 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
             <Trans>{item.title}</Trans>
           </p>
 
-          {item.icons.map((imgProps: any, index: number) => (
-            <img
-              src={imgProps.src}
-              alt={imgProps.alt}
-              onClick={(event) => {
-                this.handleView(event, item.value, imgProps.value);
-              }}
-              className={`cursor-pointer icons-option`}
-            />
-          ))}
+          <div className="grp-btn">
+            {item.icons.map((imgProps: any, index: number) => (
+                  <button onClick={(event) => {
+                  this.handleView(event, item.value, imgProps.value);
+                }} className="btn-style">
+                  <img
+                    src={imgProps.src}
+                    alt={imgProps.alt}
+                    className={`cursor-pointer`}
+                  />
+                </button>
+            ))}
+          </div>
         </li>
       ));
 

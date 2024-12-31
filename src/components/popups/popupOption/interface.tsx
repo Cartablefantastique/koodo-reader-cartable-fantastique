@@ -21,3 +21,10 @@ export interface PopupOptionProps {
   handleChangeDirection: (isChangeDirection: boolean) => void;
   t: (title: string) => string;
 }
+export interface ViewerState {
+  words: string[],
+  currentWordIndex: null | number,
+  speaking: boolean,
+  readerMode: string;
+
+}

@@ -2,6 +2,7 @@ import { connect } from "react-redux";
 import {
   handleActionDialog,
   handleReadingState,
+  handleReadingStatus,
   handleReadingBook,
   handleHtmlBook,
   handleRenderBookFunc,
@@ -27,6 +28,7 @@ const mapStateToProps = (state: stateType) => {
     isOpenActionDialog: state.book.isOpenActionDialog,
     currentBook: state.book.currentBook,
     isReading: state.book.isReading,
+    status: state.book.status,
     renderNoteFunc: state.book.renderNoteFunc,
     htmlBook: state.reader.htmlBook,
     isOpenMenu: state.viewArea.isOpenMenu,
@@ -37,6 +39,7 @@ const mapStateToProps = (state: stateType) => {
 };
 const actionCreator = {
   handleReadingState,
+  handleReadingStatus,
   handleReadingBook,
   handleActionDialog,
   handleHtmlBook,

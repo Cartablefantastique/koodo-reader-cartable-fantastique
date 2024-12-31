@@ -22,6 +22,7 @@ import PageWidget from "../../containers/pageWidget";
 import { scrollContents } from "../../utils/commonUtil";
 
 
+
 declare var window: any;
 let lock = false; //prevent from clicking too fasts
 
@@ -52,7 +53,11 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
       pageWidth: "",
       chapter: "",
       rendition: null,
-      isColorChanged: StorageUtil.getReaderConfig("changeColorsTriggered") === "true"
+      isColorChanged: StorageUtil.getReaderConfig("changeColorsTriggered") === "true",
+      words: [],
+      currentWordIndex: null,
+      speaking: false,
+
     };
     this.lock = false;
 
@@ -80,10 +85,12 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
     window.addEventListener("removeStyles", () => {
       this.disableBackgroundColor();
     })
+    window.addEventListener("startBookReading", async () => {
+      await this.handleBookVoice();
+    })
     const changeColorsTriggered = StorageUtil.getReaderConfig("changeColorsTriggered") === "true";
 
     this.handleChangeStyle(changeColorsTriggered);
-
 
   }
 
@@ -91,8 +98,15 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
     //écouteur d’événement est nettoyé lorsque le composant se démonte
     window.removeEventListener("localStorageChange", this.handleLocalStorageChange);
     window.removeEventListener("removeStyles", this.disableBackgroundColor)
+    window.removeEventListener("startBookReading", this.handleBookVoice)
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.status !== this.props.status) {
+      // Exécuter la logique seulement si le statut a changé
+      this.syncPlaybackWithStatus();
+    }
+  }
 
   handleChangeStyle = async (changeColorsTriggered: boolean) => {
     if (changeColorsTriggered) {
@@ -215,7 +229,6 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
 
           await this.handleRest(rendition);
           this.props.handleReadingState(true);
-
           RecentBooks.setRecent(this.props.currentBook.key);
           document.title = name + " - Koodo Reader";
         }
@@ -266,6 +279,156 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
   };
 
 
+  handleBookVoice = async () => {
+    if (lock) return;
+    const { key, path, format, name } = this.props.currentBook;
+
+    try {
+      let isCacheExsit = await BookUtil.isBookExist("cache-" + key, path);
+      BookUtil.fetchBook(isCacheExsit ? "cache-" + key : key, true, path).then(
+        async (result: any) => {
+          if (!result) {
+            toast.error(this.props.t("Book not exsit"));
+            return;
+          }
+
+          let rendition = BookUtil.getRendtion(
+            result,
+            isCacheExsit ? "CACHE" : format,
+            this.state.readerMode,
+            this.props.currentBook.charset,
+            StorageUtil.getReaderConfig("isSliding") === "yes" ? "sliding" : ""
+          );
+          await rendition.renderTo(
+            document.getElementsByClassName("html-viewer-page")[0]
+          );
+
+          rendition.on("rendered", () => {
+            this.handleSpeakText(rendition);
+
+          })
+
+          await this.handleRest(rendition);
+          this.props.handleReadingState(true);
+          RecentBooks.setRecent(this.props.currentBook.key);
+          document.title = name + " - Koodo Reader";
+        }
+      );
+    } catch (error) {
+      console.error("Erreur lors du traitement du livre :", error);
+    }
+  };
+
+
+  handleSpeakText = (rendition) => {
+    if (!rendition) return;
+
+    const iframe = rendition.element?.querySelector("iframe");
+    if (!iframe) {
+      console.error("Impossible de trouver l'iframe dans rendition.element");
+      return;
+    }
+
+    const doc = iframe.contentDocument || iframe.contentWindow?.document;
+    if (!doc) {
+      console.error("Impossible d'accéder au contenu de l'iframe");
+      return;
+    }
+    const paragraphs = doc.querySelectorAll("p.kookit-text");
+    this.removeTagsFromParagraph(paragraphs);
+
+    // Récupérer tous les mots de tous les paragraphes
+    let allWords: string[] = [];
+    paragraphs.forEach((p) => {
+      const lines = this.selectLines(p);
+      lines.forEach((line) => {
+        allWords = [...allWords, ...line.split(/\s+/).filter((e) => e.trim() !== "")];
+      });
+    });
+
+    this.setState({ words: allWords, currentWordIndex: 0, speaking: true }, this.readWord);
+
+  };
+
+  handleStop = () => {
+
+    window.speechSynthesis.cancel();
+    this.setState({ currentWordIndex: null, speaking: false, })
+  }
+
+
+  // Nouvelle méthode pour synchroniser la lecture avec le statut
+  syncPlaybackWithStatus = () => {
+    const { status } = this.props;
+    if (status && speechSynthesis.speaking) {
+      // Reprendre la lecture si elle est en pause
+      speechSynthesis.resume();
+    } else if (!status && speechSynthesis.speaking) {
+      // Mettre en pause la lecture
+      speechSynthesis.pause();
+    } else if (!speechSynthesis.speaking) {
+      // Démarrer une nouvelle lecture
+      this.readWord();
+    }
+  };
+
+  readWord = () => {
+    const { words, currentWordIndex } = this.state;
+    const { status } = this.props;
+
+    if (currentWordIndex === null || currentWordIndex >= words.length) {
+      this.handleStop(); // Arrête si tous les mots sont lus
+      return;
+    }
+
+    if (status && speechSynthesis.speaking) {
+      // Reprendre la lecture si elle est en pause
+      speechSynthesis.resume();
+      return;
+    }
+
+    if (speechSynthesis.pending) {
+      this.handleStop(); // Arrête en cas de problème de synthèse
+      return;
+    }
+
+    // Lire le mot courant
+    const utterance = new SpeechSynthesisUtterance(words[currentWordIndex]);
+    utterance.lang = "fr-FR";
+    utterance.rate = 2;
+
+    utterance.onend = () => {
+      // Passe au mot suivant après la lecture
+      this.setState(
+        (prevState) => ({ currentWordIndex: prevState.currentWordIndex! + 1 }),
+        this.readWord
+      );
+    };
+
+    speechSynthesis.speak(utterance);
+    this.highlightWord(words[currentWordIndex]);
+  };
+
+
+  highlightWord = (word) => {
+    const doc = getIframeDoc();
+    if (!doc) return;
+
+    const paragraphs = doc.querySelectorAll("p.kookit-text");
+    const escapeRegExp = (string) => {
+      return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Échappe les caractères spéciaux
+    };
+    const escapedWord = escapeRegExp(word);
+    paragraphs.forEach((p) => {
+      const text = p.textContent || "";
+      const highlightedText = text.replace(
+        //Permet de trouver et surligner uniquement le mot entier (non une sous-chaîne).
+        new RegExp(`\\b${escapedWord}\\b`, "g"),
+        `<span style="background-color: yellow;">${word}</span>`
+      );
+      p.innerHTML = highlightedText;
+    });
+  };
 
 
   /**
@@ -441,6 +604,9 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
         // Trouver les lignes correspondant à ce paragraphe
         const lines = this.selectLines(p);
         lines.forEach((line) => {
+
+
+
           const color = colors[colorIndex % colors.length];
           colorIndex++;
 
@@ -665,6 +831,8 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
   render() {
     return (
       <>
+
+
         {this.props.htmlBook ? (
           <PopupMenu
             {...{
@@ -727,6 +895,7 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
           }
         ></div>
         <PageWidget />
+
         {StorageUtil.getReaderConfig("isHideBackground") === "yes" ? null : this
           .props.currentBook.key ? (
           <Background />

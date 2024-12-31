@@ -38,9 +38,18 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
       isShowTextPicker: false,
       isShowBgPicker: false,
       isButtonClicked: false,
+      // status: props.status,
 
     };
   }
+
+  // componentDidUpdate(prevProps: ThemeListProps) {
+  //   console.log("prevProps.status", prevProps.status)
+  //   console.log("this.props.status", this.props.status)
+  //   if (prevProps.status !== this.props.status) {
+  //     this.setState({ status: this.props.status });
+  //   }
+  // }
   handleChangeBgColor = (color: string, index: number = -1) => {
     StorageUtil.setReaderConfig("backgroundColor", color);
     this.setState({
@@ -133,8 +142,14 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
     window.dispatchEvent(event);
   }
 
+  initiateBookSpeech() {
+    const event = new Event("startBookReading")
+    window.dispatchEvent(event);
+
+  }
 
   render() {
+
     const renderBackgroundColorList = () => {
       return backgroundList
         .concat(ThemeUtil.getAllThemes())
@@ -289,6 +304,29 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
             className="btn--reset-style"
           >
             <img src={gomme1} alt="Effacer les couleurs" />
+          </button>
+
+        </div>
+
+        <div className="background-color-line">
+          <Trans>Lire le texte</Trans>
+        </div>
+        <div className="btn-control-reading">
+          <button
+            onClick={() => this.initiateBookSpeech()}
+            className="btn-control-reader"
+          >
+            Controle Lecture
+          </button>
+
+          <button
+            onClick={() => {
+              const newStatus = this.props.status ? false : true
+              this.props.handleReadingStatus(newStatus);
+            }}
+            className="btn-control-reader"
+          >
+            {this.props.status ? "Play" : "Pause"}
           </button>
 
         </div>

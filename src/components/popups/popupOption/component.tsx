@@ -2,7 +2,7 @@ import React from "react";
 import "./popupOption.css";
 
 import Note from "../../../models/Note";
-import { PopupOptionProps } from "./interface";
+import { PopupOptionProps, ViewerState } from "./interface";
 import ColorOption from "../../colorOption";
 import RecordLocation from "../../../utils/readUtils/recordLocation";
 
@@ -18,12 +18,29 @@ import { isElectron } from "react-device-detect";
 import { createOneNote } from "../../../utils/serviceUtils/noteUtil";
 import { stopSpeak, underlinesWords } from "../../../utils/readUtils/handleSpeak";
 
+
+
 declare var window: any;
 let originalReadingELement: HTMLElement | null = null; // Élément actuellement en lecture
 let originalReadingHTML: string | null = null; // HTML original de l'élément actuellement lu
 // let cancelReading = false; // Indique si une lecture doit être annulé
-class PopupOption extends React.Component<PopupOptionProps> {
+class PopupOption extends React.Component<PopupOptionProps, ViewerState> {
 
+  constructor(props: PopupOptionProps) {
+    super(props);
+
+    this.state = {
+      words: [],
+      currentWordIndex: null,
+      speaking: false,
+      readerMode: "single"
+    }
+
+  }
+
+
+  // componentDidMount() {
+  // }
 
   handleNote = () => {
     // this.props.handleChangeDirection(false);
@@ -220,6 +237,98 @@ class PopupOption extends React.Component<PopupOptionProps> {
       window.speechSynthesis.speak(msg);
     }
   };
+
+
+  selectLines(p) {
+    const lines: string[] = [];
+    let range = new Range();
+    const textnodes = this.extractTextNode(p);
+    range.setStart(textnodes[0], 0); // démarre au début de p
+    do {
+      range = this.nextLineRange(range, textnodes); // sélectionne une ligne après l'autre
+      if (range.toString().length > 0) {
+        lines.push(range.toString());
+      }
+    } while (range.toString().length > 0); // jusqu'à ce qu'il n'y ait plus rien
+    return lines;
+  }
+
+  /**
+   * On part de la sélection précédente pour sélectionner la prochaine ligne de texte
+   * 
+   * @param range : sélection précédente
+   * @return nouvelle sélection ou null si on est arrivé en bout de paragraphe
+   */
+  nextLineRange(range, textnodes) {
+    const newRange = document.createRange();
+    //Le début de ce nouveau Range est défini à la fin du Range existant passé en paramètre
+    newRange.setStart(range.endContainer, range.endOffset);
+
+    while (!this.hasNewLine(newRange.getClientRects())) {
+      //Si la fin du Range atteint la fin du contenu du nœud actuel 
+      if (newRange.endOffset >= newRange.endContainer.textContent!.length) {
+        // on passe a la noeud suivant 
+        const index = textnodes.indexOf(newRange.endContainer);
+        if (index + 1 < textnodes.length) {
+          newRange.setEnd(textnodes[index + 1], 0); // next child node
+        } else {
+          //Si c’est le dernier nœud, on définit la fin du Range à la fin du contenu du nœud actuel et on retourne le Range
+          newRange.setEnd(newRange.endContainer, newRange.endContainer.textContent!.length); // end of paragraph
+          return newRange;
+        }
+      } else {
+        newRange.setEnd(newRange.endContainer, newRange.endOffset + 1); // next character
+      }
+    }
+
+    //reculant d’un caractère pour rester sur la même ligne.
+    if (newRange.endOffset > 0) {
+      newRange.setEnd(newRange.endContainer, newRange.endOffset - 1); // move back to the line
+    }
+
+    return newRange;
+  }
+  removeTagsFromParagraph(paragraph) {
+    // Remplace le contenu HTML du paragraphe par son équivalent texte brut
+    paragraph.innerHTML = paragraph.innerText || paragraph.textContent || "";
+  }
+
+  /**
+   * On extrait les noeuds de type TEXT_NODE
+   *
+   * @param p : élément à partir duquel on souhaite extraire les noeuds
+   */
+  extractTextNode(p) {
+    this.removeTagsFromParagraph(p)
+    const nodes: Node[] = [];
+    const walker = document.createTreeWalker(p, NodeFilter.SHOW_TEXT);
+
+    let currentNode = walker.nextNode();
+    while (currentNode) {
+      nodes.push(currentNode); // Ajoute chaque nœud texte à la liste
+      currentNode = walker.nextNode();
+    }
+
+    return nodes;
+  }
+
+  /**
+   * On a plusieurs lignes lorsqu'on a un rectangle dont le y est différent des autres rectangles
+   *
+   * @param rects : les rectangles issues de la sélection (range)
+   */
+  hasNewLine(rects) {
+    for (let i = 0; i < rects.length; i++) {
+      if (rects[i].y !== rects[0].y) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
+
+
   handleSpeak = async (continueSpeaking = true, color = "yellow") => {
     if (!continueSpeaking) {
       stopSpeak();
@@ -243,7 +352,6 @@ class PopupOption extends React.Component<PopupOptionProps> {
       alert("Veuillez sélectionner un texte à lire.");
       return;
     }
-
 
     const range = selection.getRangeAt(0); // Récupère la plage de la sélection
     const container = range.commonAncestorContainer; // Conteneur de la sélection
@@ -283,10 +391,115 @@ class PopupOption extends React.Component<PopupOptionProps> {
     // cancelReading = false;
 
     const text = selection.toString(); // Texte sélectionné
+
+
     if (element) {
       underlinesWords(text, element, "yellow");
     }
   };
+
+
+
+
+  handleSpeakAllText = async () => {
+    const doc = getIframeDoc(); // Récupère le document de l'iframe
+    if (!doc) {
+      alert("Document de l'iframe introuvable.");
+      return;
+    }
+    if (!doc.defaultView) {
+      console.error("Le contexte de l'iframe (defaultView) est introuvable.");
+      return;
+    }
+
+    // console.log("doc", doc)
+    const paragraphs = doc.querySelectorAll("p.kookit-text");
+    this.removeTagsFromParagraph(paragraphs);
+
+    // Récupérer tous les mots de tous les paragraphes
+    let allWords: string[] = [];
+    paragraphs.forEach((p) => {
+      const lines = this.selectLines(p);
+      lines.forEach((line) => {
+        allWords = [...allWords, ...line.split(/\s+/).filter((e) => e.trim() !== "")];
+      });
+    });
+
+    this.setState({ words: allWords, currentWordIndex: 0, speaking: true }, this.readWord);
+
+  };
+
+
+  // }
+
+  handleStop = () => {
+
+    window.speechSynthesis.cancel();
+    this.setState({ currentWordIndex: null, speaking: false })
+  }
+  readWord = () => {
+
+    const { words, currentWordIndex } = this.state;
+    if (currentWordIndex === null) {
+      this.handleStop();
+      return;
+    }
+    if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+      window.speechSynthesis.cancel();
+      return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(words[currentWordIndex]);
+    const voice = window.speechSynthesis.getVoices().find(
+      (voice) => voice.name === "Microsoft Hortense - French (France)(fr-FR)"
+    );
+
+    if (voice) {
+      utterance.voice = voice;
+      utterance.rate = 10;
+    } else {
+      console.error("La voix spécifiée n'a pas été trouvée.");
+    }
+
+
+
+    // Passe au mot suivant après la fin de la lecture
+    utterance.onend = () => {
+      this.setState(
+        (prevState) => ({ currentWordIndex: prevState.currentWordIndex! + 1 }),
+        this.readWord
+      );
+
+    };
+
+    // Parle le mot actuel
+    window.speechSynthesis.speak(utterance);
+
+
+    // Surligne le mot actuel
+    this.highlightWord(words[currentWordIndex]);
+  };
+
+  highlightWord = (word) => {
+    const doc = getIframeDoc();
+    if (!doc) return;
+
+    const paragraphs = doc.querySelectorAll("p.kookit-text");
+    const escapeRegExp = (string) => {
+      return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Échappe les caractères spéciaux
+    };
+    const escapedWord = escapeRegExp(word);
+    paragraphs.forEach((p) => {
+      const text = p.textContent || "";
+      const highlightedText = text.replace(
+        //Permet de trouver et surligner uniquement le mot entier (non une sous-chaîne).
+        new RegExp(`\\b${escapedWord}\\b`, "g"),
+        `<span style="background-color: yellow;">${word}</span>`
+      );
+      p.innerHTML = highlightedText;
+    });
+  };
+
 
 
   handleMultiBlockSpeak = (elements: HTMLElement[]) => {
@@ -399,14 +612,14 @@ class PopupOption extends React.Component<PopupOptionProps> {
                       //   this.handleSearchInternet();
                       //   break;
                       case 6:
-                        this.handleSpeak();
+                        this.handleSpeakAllText();
                         break;
-                      case 7:
-                        this.handleSpeak(true, "lightgrey");
-                        break;
-                      case 8:
-                        this.handleSpeak(false);
-                        break;
+                      // case 7:
+                      //   this.handleSpeak(true, "lightgrey");
+                      //   break;
+                      // case 8:
+                      //   this.handleSpeak(false);
+                      //   break;
                       default:
                         break;
                     }

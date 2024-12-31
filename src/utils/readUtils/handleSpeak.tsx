@@ -27,6 +27,8 @@ export const stopSpeak = () => {
     }
 };
 
+
+
 // Méthode pour surligner les mots
 export const underlinesWords = (
     text: string,
@@ -35,6 +37,7 @@ export const underlinesWords = (
     chunkSize: number = 20
 ) => {
     const words = text.split(" "); // Divise le texte en mots
+    chunkSize = text.length
     console.log("elment ", element)
     const chunks: string[] = [];
     const punctuationRegex = /[.,;:!?]/;
@@ -76,7 +79,8 @@ export const underlinesWords = (
             const msg = new SpeechSynthesisUtterance(chunks[currentChunkNumber]);
             msg.lang = "fr-FR";
             msg.rate = 1;
-            console.log("liste chunks .", chunks);
+            // console.log("currentChunkNumber", currentChunkNumber)
+            // console.log("liste chunks .", chunks);
 
 
             const readWordsInChunk = () => {
@@ -139,6 +143,7 @@ export const underlinesWords = (
 
     readChunks();
 };
+
 
 export const highlightWordsDirectly = (
     text: string,

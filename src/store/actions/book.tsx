@@ -24,6 +24,11 @@ export function handleActionDialog(mode: boolean) {
 export function handleReadingState(state: boolean) {
   return { type: "HANDLE_READING_STATE", payload: state };
 }
+
+export function handleReadingStatus(status: boolean) {
+  return { type: "HANDLE_READING_STATUS", payload: status };
+}
+
 export function handleReadingBook(book: BookModel) {
   return { type: "HANDLE_READING_BOOK", payload: book };
 }

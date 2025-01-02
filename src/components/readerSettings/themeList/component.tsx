@@ -38,18 +38,10 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
       isShowTextPicker: false,
       isShowBgPicker: false,
       isButtonClicked: false,
-      // status: props.status,
 
     };
   }
 
-  // componentDidUpdate(prevProps: ThemeListProps) {
-  //   console.log("prevProps.status", prevProps.status)
-  //   console.log("this.props.status", this.props.status)
-  //   if (prevProps.status !== this.props.status) {
-  //     this.setState({ status: this.props.status });
-  //   }
-  // }
   handleChangeBgColor = (color: string, index: number = -1) => {
     StorageUtil.setReaderConfig("backgroundColor", color);
     this.setState({
@@ -321,12 +313,12 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
 
           <button
             onClick={() => {
-              const newStatus = this.props.status ? false : true
-              this.props.handleReadingStatus(newStatus);
+              const propretyPauseChanged = this.props.myPauseProperty ? false : true
+              this.props.handleBookPlayingVoice(propretyPauseChanged);
             }}
             className="btn-control-reader"
           >
-            {this.props.status ? "Play" : "Pause"}
+            {this.props.myPauseProperty ? "Play" : "Pause"}
           </button>
 
         </div>

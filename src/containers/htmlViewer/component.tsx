@@ -102,8 +102,7 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.status !== this.props.status) {
-      // Exécuter la logique seulement si le statut a changé
+    if (prevProps.myPauseProperty !== this.props.myPauseProperty) {
       this.syncPlaybackWithStatus();
     }
   }
@@ -352,50 +351,42 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
 
   handleStop = () => {
 
-    window.speechSynthesis.cancel();
+    speechSynthesis.cancel();
+    this.props.handleBookPlayingVoice(false);
     this.setState({ currentWordIndex: null, speaking: false, })
   }
 
 
   // Nouvelle méthode pour synchroniser la lecture avec le statut
   syncPlaybackWithStatus = () => {
-    const { status } = this.props;
-    if (status && speechSynthesis.speaking) {
+    const { myPauseProperty } = this.props;
+    if (myPauseProperty && speechSynthesis.speaking) {
       // Reprendre la lecture si elle est en pause
       speechSynthesis.resume();
-    } else if (!status && speechSynthesis.speaking) {
+
+    } else if (!myPauseProperty && speechSynthesis.speaking) {
       // Mettre en pause la lecture
       speechSynthesis.pause();
-    } else if (!speechSynthesis.speaking) {
-      // Démarrer une nouvelle lecture
+
+    }
+    // Si le myPauseProperty est à true mais qu'aucune lecture n'est en cours, démarre
+    else if (myPauseProperty && !speechSynthesis.speaking) {
       this.readWord();
+      // this.props.handleBookPlayingVoice(false);
     }
   };
 
   readWord = () => {
     const { words, currentWordIndex } = this.state;
-    const { status } = this.props;
-
-    if (currentWordIndex === null || currentWordIndex >= words.length) {
+    if (currentWordIndex === null || currentWordIndex >= words.length || speechSynthesis.pending) {
       this.handleStop(); // Arrête si tous les mots sont lus
-      return;
-    }
-
-    if (status && speechSynthesis.speaking) {
-      // Reprendre la lecture si elle est en pause
-      speechSynthesis.resume();
-      return;
-    }
-
-    if (speechSynthesis.pending) {
-      this.handleStop(); // Arrête en cas de problème de synthèse
       return;
     }
 
     // Lire le mot courant
     const utterance = new SpeechSynthesisUtterance(words[currentWordIndex]);
     utterance.lang = "fr-FR";
-    utterance.rate = 2;
+    utterance.rate = 1;
 
     utterance.onend = () => {
       // Passe au mot suivant après la lecture

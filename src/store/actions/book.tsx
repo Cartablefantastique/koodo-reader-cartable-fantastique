@@ -25,8 +25,8 @@ export function handleReadingState(state: boolean) {
   return { type: "HANDLE_READING_STATE", payload: state };
 }
 
-export function handleReadingStatus(status: boolean) {
-  return { type: "HANDLE_READING_STATUS", payload: status };
+export function handleBookPlayingVoice(myPauseProperty: boolean) {
+  return { type: "HANDLE_Playing_VOICE_BOOK", payload: myPauseProperty };
 }
 
 export function handleReadingBook(book: BookModel) {

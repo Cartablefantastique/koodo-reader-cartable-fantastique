@@ -356,6 +356,7 @@ class PopupOption extends React.Component<PopupOptionProps, ViewerState> {
     const range = selection.getRangeAt(0); // Récupère la plage de la sélection
     const container = range.commonAncestorContainer; // Conteneur de la sélection
 
+    // console.log("rect range", range.getBoundingClientRect())
 
     console.log("container : ", container);
 
@@ -389,10 +390,12 @@ class PopupOption extends React.Component<PopupOptionProps, ViewerState> {
 
     // Réinitialise le drapeau d'annulation
     // cancelReading = false;
-
+    let allWords: string[] = [];
     const text = selection.toString(); // Texte sélectionné
+    console.log("text selected", text)
+    allWords = text.split("")
 
-
+    // this.setState({ words: allWords, currentWordIndex: 0, speaking: true }, this.readWord);
     if (element) {
       underlinesWords(text, element, "yellow");
     }
@@ -450,19 +453,8 @@ class PopupOption extends React.Component<PopupOptionProps, ViewerState> {
     }
 
     const utterance = new SpeechSynthesisUtterance(words[currentWordIndex]);
-    const voice = window.speechSynthesis.getVoices().find(
-      (voice) => voice.name === "Microsoft Hortense - French (France)(fr-FR)"
-    );
-
-    if (voice) {
-      utterance.voice = voice;
-      utterance.rate = 10;
-    } else {
-      console.error("La voix spécifiée n'a pas été trouvée.");
-    }
-
-
-
+    utterance.lang = "fr-FR";
+    utterance.rate = 2;
     // Passe au mot suivant après la fin de la lecture
     utterance.onend = () => {
       this.setState(
@@ -612,7 +604,7 @@ class PopupOption extends React.Component<PopupOptionProps, ViewerState> {
                       //   this.handleSearchInternet();
                       //   break;
                       case 6:
-                        this.handleSpeakAllText();
+                        this.handleSpeak();
                         break;
                       // case 7:
                       //   this.handleSpeak(true, "lightgrey");

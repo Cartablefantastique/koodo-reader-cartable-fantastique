@@ -60,7 +60,7 @@ export type stateType = {
     isOpenAddDialog: boolean;
     isOpenActionDialog: boolean;
     isReading: boolean;
-    status: boolean,
+    myPauseProperty: boolean,
     dragItem: string;
     currentBook: BookModel;
     renderBookFunc: () => void;

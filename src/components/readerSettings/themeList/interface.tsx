@@ -2,8 +2,8 @@ export interface ThemeListProps {
   t: (title: string) => string;
   renderBookFunc: () => void;
   renderBookWithLineColors: () => void
-  handleReadingStatus: (status: boolean) => void
-  status: boolean,
+  handleBookPlayingVoice: (myPauseProperty: boolean) => void
+  myPauseProperty: boolean,
 }
 
 export interface ThemeListState {

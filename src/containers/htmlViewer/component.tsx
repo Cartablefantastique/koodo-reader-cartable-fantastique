@@ -408,8 +408,8 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
 
           // Ajouter chaque ligne colorée
           coloredHTML += `<span class="highlightLine" style= "
-           font-size: ${StorageUtil.getReaderConfig("fontSize") || "17px"};
-          line-height: ${StorageUtil.getReaderConfig("lineHeight") || "1.25"};
+           font-size: ${StorageUtil.getReaderConfig("fontSize") || "15px"};
+          line-height: ${StorageUtil.getReaderConfig("lineHeight") || "1.5"};
           font-family: ${StorageUtil.getReaderConfig("fontFamily") || ""};
           letter-spacing: ${StorageUtil.getReaderConfig("letterSpacing") || ""};
          
@@ -448,8 +448,8 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
           coloredHTML += `<span 
           class="highlightLine"
           style="
-          font-size: ${StorageUtil.getReaderConfig("fontSize") || "17px"};
-          line-height: ${StorageUtil.getReaderConfig("lineHeight") || "1.25"};
+          font-size: ${StorageUtil.getReaderConfig("fontSize") || "20px"};
+          line-height: ${StorageUtil.getReaderConfig("lineHeight") || "1.5"};
           font-family: ${StorageUtil.getReaderConfig("fontFamily") || ""};
           letter-spacing: ${StorageUtil.getReaderConfig("letterSpacing") || ""};
          

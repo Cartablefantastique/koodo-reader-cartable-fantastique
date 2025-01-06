@@ -26,6 +26,8 @@ class StorageUtil {
     // TODO ADIB : Comment reset les couleurs ?
     // this.setReaderConfig("highlightLines", "resetStyles")
     // this.setReaderConfig("highlightLines", "resetStyles")
+    
+    this.setReaderConfig("readerMode", "single");
     this.setReaderConfigNumber("fontSize", 15)
     this.setReaderConfig("fontFamily", "Arial")
     this.setReaderConfigNumber("lineHeight", 1.5)

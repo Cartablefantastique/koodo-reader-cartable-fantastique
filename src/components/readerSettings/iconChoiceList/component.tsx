@@ -165,6 +165,24 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
           alt: "Réduire la largeur de page"
         }
       ]
+    },
+
+    {
+      id: 9,
+      title: "Vitesse de Lecture",
+      value: "readingRate",
+      icons: [
+        {
+          value: "Add",
+          src: iconAdd,
+          alt: "Augmenter la vitesse de Lecture"
+        },
+        {
+          value: "Reduce",
+          src: iconReduce,
+          alt: "Réduire la vitesse de Lecture"
+        }
+      ]
     }
   ]
 
@@ -242,6 +260,7 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
         }
         console.log(`${option} : ${newLetterSpacing >= 0 && newLetterSpacing <= 20 ? "On change la taille et " : "On ne change pas la taille "} Nouvelle taille : ${newLetterSpacing} et Ancienne taille : ${currentLetterSpacing}`)
         break;
+
       case "margin":
         let currentMargin = StorageUtil.getReaderConfig(option)
         let newMargin = currentMargin
@@ -256,24 +275,40 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
         console.log(`${option} : ${newMargin >= 0 && newMargin <= 80 ? "On change la taille et " : "On ne change pas la taille "} Nouvelle taille : ${newMargin} et Ancienne taille : ${currentMargin}`)
         BookUtil.reloadBooks();
         return;
-      case "scale":
-        let currentScale = StorageUtil.getReaderConfig(option)
-        let newScale = currentScale
-        if ((value === "Add" && currentScale < 3) || (value === "Reduce" && currentScale > 0.5)) {
-          newScale = value === "Add" ? newScale + 0.5 : newScale - 0.5
-          StorageUtil.setReaderConfig(option, newScale);
+
+      case "readingRate":
+        let currentRate = StorageUtil.getReaderConfig(option) || 0;
+        let newCurrentRate = currentRate;
+
+        if ((value === "Add" && currentRate < 5) || (value === "Reduce" && currentRate > 0)) {
+          newCurrentRate = value === "Add" ? currentRate + 0.5 : currentRate - 0.5;
+          this.props.handleChangeReadingRate(newCurrentRate);
         }
-        // console.log("option sclae", option)
-        // if (newScale === "Add" || newScale === "Reduce") {
-        //   StorageUtil.resetReaderConfig(option)
-        // }
-        console.log(`${option} : ${newScale >= 0.5 && newScale <= 3 ? "On change la taille et " : "On ne change pas la taille "} Nouvelle taille : ${newScale} et Ancienne taille : ${currentScale}`)
-        BookUtil.reloadBooks();
-        return;
-      default:
-        StorageUtil.defaultReaderConfig()
-        BookUtil.reloadBooks()
-        return;
+        if (newCurrentRate === "Add" || newCurrentRate === "Reduce") {
+          StorageUtil.resetReaderConfig(option)
+        }
+
+        console.log(
+          `${option} : ${newCurrentRate >= 0 && newCurrentRate <= 5 ? "On change la vitesse et " : "On ne change pas la vitesse "} Nouvelle vitesse : ${newCurrentRate} et Ancienne vitesse : ${currentRate}`
+        );
+        break;
+
+      // case "scale":
+      //   let currentScale = StorageUtil.getReaderConfig(option)
+      //   let newScale = currentScale
+      //   if ((value === "Add" && currentScale < 3) || (value === "Reduce" && currentScale > 0.5)) {
+      //     newScale = value === "Add" ? newScale + 0.5 : newScale - 0.5
+      //     StorageUtil.setReaderConfig(option, newScale);
+      //   }
+      //   console.log("option sclae", option)
+      //   if (newScale === "Add" || newScale === "Reduce") {
+      //     StorageUtil.resetReaderConfig(option)
+      //   }
+      //   console.log(`${option} : ${newScale >= 0.5 && newScale <= 3 ? "On change la taille et " : "On ne change pas la taille "} Nouvelle taille : ${newScale} et Ancienne taille : ${currentScale}`)
+      //   // BookUtil.reloadBooks();
+      //   return;
+      // default:
+      //   break;
     }
     const changeColorsTriggered = StorageUtil.getReaderConfig("changeColorsTriggered") === "true";
     if (changeColorsTriggered) {
@@ -292,19 +327,17 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
             <Trans>{item.title}</Trans>
           </p>
 
-          <div className="grp-btn">
-            {item.icons.map((imgProps: any, index: number) => (
-                  <button onClick={(event) => {
-                  this.handleView(event, item.value, imgProps.value);
-                }} className="btn-style">
-                  <img
-                    src={imgProps.src}
-                    alt={imgProps.alt}
-                    className={`cursor-pointer`}
-                  />
-                </button>
-            ))}
-          </div>
+          {item.icons.map((imgProps: any, index: number) => (
+            <img
+              src={imgProps.src}
+              alt={imgProps.alt}
+              onClick={(event) => {
+                this.handleView(event, item.value, imgProps.value);
+
+              }}
+              className={`cursor-pointer icons-option`}
+            />
+          ))}
         </li>
       ));
 

@@ -63,7 +63,7 @@
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  gap: 5rem;
+  gap: 1rem;
   .btn--reset-style,
   .btn-style {
     background-color: #ffffff;
@@ -75,7 +75,7 @@
   }
 }
 .btn-control-reader {
-  background-color: #007cff;
+  background-color: white;
   border: none;
   color: white;
   padding: 10px;

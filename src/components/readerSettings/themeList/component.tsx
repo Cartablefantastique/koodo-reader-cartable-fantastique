@@ -12,7 +12,8 @@ import BookUtil from "../../../utils/fileUtils/bookUtil";
 import Lignescouleurs1 from "../../../assets/Lignescouleurs1.png"
 import SurLignerLignes2 from "../../../assets/SurLignerLignes2.png";
 import gomme1 from "../../../assets/gomme1.png";
-
+import lecture from "../../../assets/icons/lecture.jpg"
+import stop from "../../../assets/icons/stop.jpg"
 class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
   constructor(props: ThemeListProps) {
     super(props);
@@ -137,7 +138,12 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
   initiateBookSpeech() {
     const event = new Event("startBookReading")
     window.dispatchEvent(event);
+    this.props.handleBookPlayingVoice(true);
+  }
 
+  stopSpeekingText() {
+    const event = new Event("stopSpeaking");
+    window.dispatchEvent(event);
   }
 
   render() {
@@ -308,7 +314,7 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
             onClick={() => this.initiateBookSpeech()}
             className="btn-control-reader"
           >
-            Controle Lecture
+            <img src={lecture} alt="Lecture du texte" />
           </button>
 
           <button
@@ -318,10 +324,11 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
             }}
             className="btn-control-reader"
           >
-            {this.props.myPauseProperty ? "Play" : "Pause"}
+            <img src={stop} alt="Arrête le lecture" />
           </button>
 
         </div>
+
 
       </div>
     );

@@ -61,6 +61,7 @@ export type stateType = {
     isOpenActionDialog: boolean;
     isReading: boolean;
     myPauseProperty: boolean,
+    readingRate: number,
     dragItem: string;
     currentBook: BookModel;
     renderBookFunc: () => void;

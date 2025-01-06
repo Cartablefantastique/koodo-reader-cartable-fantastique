@@ -11,6 +11,8 @@ export interface ViewerProps {
   notes: Note[];
   isReading: boolean;
   myPauseProperty: boolean,
+  readingRate: number,
+  mode: string;
   htmlBook: HtmlBook;
   isShow: boolean;
   isOpenMenu: boolean;
@@ -55,7 +57,8 @@ export interface ViewerState {
   isColorChanged: boolean;
   words: string[],
   currentWordIndex: null | number,
-  speaking: boolean,
+
+
 }
 
 export interface LineEnding {

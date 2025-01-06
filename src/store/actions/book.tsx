@@ -29,6 +29,10 @@ export function handleBookPlayingVoice(myPauseProperty: boolean) {
   return { type: "HANDLE_Playing_VOICE_BOOK", payload: myPauseProperty };
 }
 
+export function handleChangeReadingRate(readingRate: number) {
+  return { type: "HANDLE_CHANGE_READING_RATE", payload: readingRate };
+}
+
 export function handleReadingBook(book: BookModel) {
   return { type: "HANDLE_READING_BOOK", payload: book };
 }

@@ -3,6 +3,7 @@ import {
   handleActionDialog,
   handleReadingState,
   handleBookPlayingVoice,
+  handleChangeReadingRate,
   handleReadingBook,
   handleHtmlBook,
   handleRenderBookFunc,
@@ -29,6 +30,7 @@ const mapStateToProps = (state: stateType) => {
     currentBook: state.book.currentBook,
     isReading: state.book.isReading,
     myPauseProperty: state.book.myPauseProperty,
+    readingRate: state.book.readingRate,
     renderNoteFunc: state.book.renderNoteFunc,
     htmlBook: state.reader.htmlBook,
     isOpenMenu: state.viewArea.isOpenMenu,
@@ -40,6 +42,7 @@ const mapStateToProps = (state: stateType) => {
 const actionCreator = {
   handleReadingState,
   handleBookPlayingVoice,
+  handleChangeReadingRate,
   handleReadingBook,
   handleActionDialog,
   handleHtmlBook,

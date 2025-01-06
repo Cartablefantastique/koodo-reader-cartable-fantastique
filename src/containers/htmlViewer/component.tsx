@@ -28,7 +28,7 @@ let lock = false; //prevent from clicking too fasts
 
 class Viewer extends React.Component<ViewerProps, ViewerState> {
   lock: boolean;
-  observer: MutationObserver | null = null;
+
   constructor(props: ViewerProps) {
     super(props);
     this.state = {
@@ -45,6 +45,7 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
       isDisablePopup: StorageUtil.getReaderConfig("isDisablePopup") === "yes",
       isTouch: StorageUtil.getReaderConfig("isTouch") === "yes",
       margin: parseInt(StorageUtil.getReaderConfig("margin")) || 0,
+      // readingRate: StorageUtil.getReaderConfig("readingRate") || 0,
       chapterDocIndex: parseInt(
         RecordLocation.getHtmlLocation(this.props.currentBook.key)
           .chapterDocIndex || 0
@@ -56,7 +57,7 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
       isColorChanged: StorageUtil.getReaderConfig("changeColorsTriggered") === "true",
       words: [],
       currentWordIndex: null,
-      speaking: false,
+
 
     };
     this.lock = false;
@@ -88,6 +89,10 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
     window.addEventListener("startBookReading", async () => {
       await this.handleBookVoice();
     })
+
+    window.addEventListener("stopSpeaking", () => {
+      this.handleStop();
+    })
     const changeColorsTriggered = StorageUtil.getReaderConfig("changeColorsTriggered") === "true";
 
     this.handleChangeStyle(changeColorsTriggered);
@@ -99,12 +104,15 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
     window.removeEventListener("localStorageChange", this.handleLocalStorageChange);
     window.removeEventListener("removeStyles", this.disableBackgroundColor)
     window.removeEventListener("startBookReading", this.handleBookVoice)
+    window.removeEventListener("stopSpeaking", this.handleStop)
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.myPauseProperty !== this.props.myPauseProperty) {
       this.syncPlaybackWithStatus();
     }
+
+
   }
 
   handleChangeStyle = async (changeColorsTriggered: boolean) => {
@@ -345,7 +353,7 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
       });
     });
 
-    this.setState({ words: allWords, currentWordIndex: 0, speaking: true }, this.readWord);
+    this.setState({ words: allWords, currentWordIndex: 0 }, this.readWord);
 
   };
 
@@ -353,13 +361,14 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
 
     speechSynthesis.cancel();
     this.props.handleBookPlayingVoice(false);
-    this.setState({ currentWordIndex: null, speaking: false, })
+    this.setState({ currentWordIndex: null })
   }
 
 
   // Nouvelle méthode pour synchroniser la lecture avec le statut
   syncPlaybackWithStatus = () => {
     const { myPauseProperty } = this.props;
+
     if (myPauseProperty && speechSynthesis.speaking) {
       // Reprendre la lecture si elle est en pause
       speechSynthesis.resume();
@@ -372,12 +381,12 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
     // Si le myPauseProperty est à true mais qu'aucune lecture n'est en cours, démarre
     else if (myPauseProperty && !speechSynthesis.speaking) {
       this.readWord();
-      // this.props.handleBookPlayingVoice(false);
     }
   };
 
   readWord = () => {
     const { words, currentWordIndex } = this.state;
+    const { readingRate } = this.props;
     if (currentWordIndex === null || currentWordIndex >= words.length || speechSynthesis.pending) {
       this.handleStop(); // Arrête si tous les mots sont lus
       return;
@@ -386,17 +395,18 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
     // Lire le mot courant
     const utterance = new SpeechSynthesisUtterance(words[currentWordIndex]);
     utterance.lang = "fr-FR";
-    utterance.rate = 1;
-
+    utterance.rate = readingRate;
     utterance.onend = () => {
       // Passe au mot suivant après la lecture
       this.setState(
         (prevState) => ({ currentWordIndex: prevState.currentWordIndex! + 1 }),
         this.readWord
       );
+
     };
 
     speechSynthesis.speak(utterance);
+
     this.highlightWord(words[currentWordIndex]);
   };
 
@@ -410,6 +420,7 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
       return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Échappe les caractères spéciaux
     };
     const escapedWord = escapeRegExp(word);
+
     paragraphs.forEach((p) => {
       const text = p.textContent || "";
       const highlightedText = text.replace(
@@ -417,6 +428,7 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
         new RegExp(`\\b${escapedWord}\\b`, "g"),
         `<span style="background-color: yellow;">${word}</span>`
       );
+
       p.innerHTML = highlightedText;
     });
   };
@@ -639,7 +651,6 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
       console.error("Impossible d'accéder au contenu de l'iframe");
       return;
     }
-
     try {
       const highlightConfig = StorageUtil.getReaderConfig("highlightLines");
       const lineHighlight = highlightConfig ? JSON.parse(highlightConfig) : null;

@@ -396,7 +396,6 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
     // Lire le mot courant
     const utterance = new SpeechSynthesisUtterance(words[currentWordIndex]);
     utterance.lang = langSpeaking ? langSpeaking : langStored;
-    console.log("utterance.lang ", utterance.lang)
     utterance.rate = readingRate ? readingRate : rateStored;
 
     utterance.onend = () => {
@@ -409,7 +408,6 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
     };
 
     speechSynthesis.speak(utterance);
-
     this.highlightWord(words[currentWordIndex]);
   };
 

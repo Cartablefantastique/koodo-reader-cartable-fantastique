@@ -348,6 +348,7 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
 
           {item.icons.map((imgProps: any, index: number) => (
             <img
+              key={index}
               src={imgProps.src}
               alt={imgProps.alt}
               onClick={(event) => {

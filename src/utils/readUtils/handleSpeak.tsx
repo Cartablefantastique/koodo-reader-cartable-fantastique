@@ -171,7 +171,7 @@ export const highlightWordsDirectly = (
                 )
                 .join(" ");
 
-            element.innerHTML = highlightedText; // Met à jour le contenu avec surlignement
+            element.innerHTML = highlightedText; // Met à jour le contenu avec surlignement 
             wordIndex++;
             setTimeout(highlightNextWord, delay); // Pause entre chaque mot
         } else {

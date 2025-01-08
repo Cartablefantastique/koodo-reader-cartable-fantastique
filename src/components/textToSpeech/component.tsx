@@ -420,10 +420,12 @@ class TextToSpeech extends React.Component<
                     value={item}
                     className="lang-setting-option"
                     key={item}
-                    selected={
-                      item ===
-                      (StorageUtil.getReaderConfig("voiceSpeed") || "1")
-                    }
+                    defaultValue={StorageUtil.getReaderConfig("voiceSpeed") || "1"}
+                  // selected={
+
+                  //   item ===
+                  //   (StorageUtil.getReaderConfig("voiceSpeed") || "1")
+                  // }
                   >
                     {item}
                   </option>

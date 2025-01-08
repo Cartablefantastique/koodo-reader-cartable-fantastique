@@ -33,6 +33,10 @@ export function handleChangeReadingRate(readingRate: number) {
   return { type: "HANDLE_CHANGE_READING_RATE", payload: readingRate };
 }
 
+export function handleChangeLanguage(langSpeaking: string) {
+  return { type: "HANDLE_CHANGE_LANGUAGE_SPEAKING", payload: langSpeaking };
+}
+
 export function handleReadingBook(book: BookModel) {
   return { type: "HANDLE_READING_BOOK", payload: book };
 }

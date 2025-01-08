@@ -18,6 +18,7 @@ import {
   handleFetchBookmarks,
   handlePercentage,
   handleFetchPercentage,
+  handleChangeLanguage,
 
 } from "../../store/actions";
 import Viewer from "./component";
@@ -31,6 +32,7 @@ const mapStateToProps = (state: stateType) => {
     isReading: state.book.isReading,
     myPauseProperty: state.book.myPauseProperty,
     readingRate: state.book.readingRate,
+    langSpeaking: state.book.langSpeaking,
     renderNoteFunc: state.book.renderNoteFunc,
     htmlBook: state.reader.htmlBook,
     isOpenMenu: state.viewArea.isOpenMenu,
@@ -43,6 +45,7 @@ const actionCreator = {
   handleReadingState,
   handleBookPlayingVoice,
   handleChangeReadingRate,
+  handleChangeLanguage,
   handleReadingBook,
   handleActionDialog,
   handleHtmlBook,

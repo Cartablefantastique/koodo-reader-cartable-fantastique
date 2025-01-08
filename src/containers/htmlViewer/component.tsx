@@ -45,7 +45,6 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
       isDisablePopup: StorageUtil.getReaderConfig("isDisablePopup") === "yes",
       isTouch: StorageUtil.getReaderConfig("isTouch") === "yes",
       margin: parseInt(StorageUtil.getReaderConfig("margin")) || 0,
-      // readingRate: StorageUtil.getReaderConfig("readingRate") || 0,
       chapterDocIndex: parseInt(
         RecordLocation.getHtmlLocation(this.props.currentBook.key)
           .chapterDocIndex || 0
@@ -57,7 +56,8 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
       isColorChanged: StorageUtil.getReaderConfig("changeColorsTriggered") === "true",
       words: [],
       currentWordIndex: null,
-
+      rateStored: StorageUtil.getReaderConfig("readingRate"),
+      langStored: StorageUtil.getReaderConfig("speakingLanguage")
 
     };
     this.lock = false;
@@ -385,8 +385,9 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
   };
 
   readWord = () => {
-    const { words, currentWordIndex } = this.state;
-    const { readingRate } = this.props;
+    const { words, currentWordIndex, rateStored, langStored } = this.state;
+    const { readingRate, langSpeaking } = this.props;
+
     if (currentWordIndex === null || currentWordIndex >= words.length || speechSynthesis.pending) {
       this.handleStop(); // Arrête si tous les mots sont lus
       return;
@@ -394,8 +395,10 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
 
     // Lire le mot courant
     const utterance = new SpeechSynthesisUtterance(words[currentWordIndex]);
-    utterance.lang = "fr-FR";
-    utterance.rate = readingRate;
+    utterance.lang = langSpeaking ? langSpeaking : langStored;
+    console.log("utterance.lang ", utterance.lang)
+    utterance.rate = readingRate ? readingRate : rateStored;
+
     utterance.onend = () => {
       // Passe au mot suivant après la lecture
       this.setState(
@@ -833,8 +836,6 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
   render() {
     return (
       <>
-
-
         {this.props.htmlBook ? (
           <PopupMenu
             {...{

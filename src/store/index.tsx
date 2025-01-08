@@ -62,6 +62,7 @@ export type stateType = {
     isReading: boolean;
     myPauseProperty: boolean,
     readingRate: number,
+    langSpeaking: string,
     dragItem: string;
     currentBook: BookModel;
     renderBookFunc: () => void;

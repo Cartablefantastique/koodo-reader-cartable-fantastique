@@ -6,6 +6,7 @@ const initState = {
   isReading: false,
   myPauseProperty: false,
   readingRate: 0,
+  langSpeaking: "",
   dragItem: "",
   currentBook: {},
   renderBookFunc: () => { },
@@ -69,6 +70,11 @@ export function book(
       return {
         ...state,
         readingRate: action.payload
+      }
+    case "HANDLE_CHANGE_LANGUAGE_SPEAKING":
+      return {
+        ...state,
+        langSpeaking: action.payload
       }
     case "HANDLE_READING_BOOK":
       return {

@@ -183,6 +183,25 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
           alt: "Réduire la vitesse de Lecture"
         }
       ]
+    },
+
+    {
+      id: 10,
+      title: "Langue de Lecture",
+      value: "speakingLanguage",
+      icons: [
+        {
+          value: "français",
+          src: drapeauxFrance,
+          alt: "Langue Français",
+        },
+        {
+          value: "anglais",
+          src: drapeauxRoyaumeUni,
+          alt: "Langue Anglais",
+
+        }
+      ]
     }
   ]
 
@@ -280,8 +299,9 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
         let currentRate = StorageUtil.getReaderConfig(option) || 0;
         let newCurrentRate = currentRate;
 
-        if ((value === "Add" && currentRate < 5) || (value === "Reduce" && currentRate > 0)) {
+        if ((value === "Add" && currentRate < 8) || (value === "Reduce" && currentRate > 0)) {
           newCurrentRate = value === "Add" ? currentRate + 0.5 : currentRate - 0.5;
+          StorageUtil.setReaderConfig(option, newCurrentRate)
           this.props.handleChangeReadingRate(newCurrentRate);
         }
         if (newCurrentRate === "Add" || newCurrentRate === "Reduce") {
@@ -293,22 +313,21 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
         );
         break;
 
-      // case "scale":
-      //   let currentScale = StorageUtil.getReaderConfig(option)
-      //   let newScale = currentScale
-      //   if ((value === "Add" && currentScale < 3) || (value === "Reduce" && currentScale > 0.5)) {
-      //     newScale = value === "Add" ? newScale + 0.5 : newScale - 0.5
-      //     StorageUtil.setReaderConfig(option, newScale);
-      //   }
-      //   console.log("option sclae", option)
-      //   if (newScale === "Add" || newScale === "Reduce") {
-      //     StorageUtil.resetReaderConfig(option)
-      //   }
-      //   console.log(`${option} : ${newScale >= 0.5 && newScale <= 3 ? "On change la taille et " : "On ne change pas la taille "} Nouvelle taille : ${newScale} et Ancienne taille : ${currentScale}`)
-      //   // BookUtil.reloadBooks();
-      //   return;
-      // default:
-      //   break;
+      case "speakingLanguage":
+        const languageMap = {
+          "français": "fr-FR",
+          "anglais": "en-EN"
+        };
+        let currentLanguage = StorageUtil.getReaderConfig(option) || "";
+
+        let newCurrentLanguage = languageMap[value] || currentLanguage;
+        if (newCurrentLanguage !== currentLanguage) {
+
+          StorageUtil.setReaderConfig(option, newCurrentLanguage);
+          this.props.handleChangeLanguage(newCurrentLanguage);
+        }
+        break;
+
     }
     const changeColorsTriggered = StorageUtil.getReaderConfig("changeColorsTriggered") === "true";
     if (changeColorsTriggered) {

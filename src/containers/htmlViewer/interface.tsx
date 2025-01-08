@@ -12,6 +12,7 @@ export interface ViewerProps {
   isReading: boolean;
   myPauseProperty: boolean,
   readingRate: number,
+  langSpeaking: string,
   mode: string;
   htmlBook: HtmlBook;
   isShow: boolean;
@@ -57,6 +58,8 @@ export interface ViewerState {
   isColorChanged: boolean;
   words: string[],
   currentWordIndex: null | number,
+  rateStored: number,
+  langStored: string,
 
 
 }

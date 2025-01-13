@@ -184,25 +184,6 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
         }
       ]
     },
-
-    {
-      id: 10,
-      title: "Langue de Lecture",
-      value: "speakingLanguage",
-      icons: [
-        {
-          value: "français",
-          src: drapeauxFrance,
-          alt: "Langue Français",
-        },
-        {
-          value: "anglais",
-          src: drapeauxRoyaumeUni,
-          alt: "Langue Anglais",
-
-        }
-      ]
-    }
   ]
 
   componentDidMount() {
@@ -296,7 +277,7 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
         return;
 
       case "readingRate":
-        let currentRate = StorageUtil.getReaderConfig(option) || 0;
+        let currentRate = StorageUtil.getReaderConfig(option);
         let newCurrentRate = currentRate;
 
         if ((value === "Add" && currentRate < 8) || (value === "Reduce" && currentRate > 0)) {
@@ -311,21 +292,6 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
         console.log(
           `${option} : ${newCurrentRate >= 0 && newCurrentRate <= 5 ? "On change la vitesse et " : "On ne change pas la vitesse "} Nouvelle vitesse : ${newCurrentRate} et Ancienne vitesse : ${currentRate}`
         );
-        break;
-
-      case "speakingLanguage":
-        const languageMap = {
-          "français": "fr-FR",
-          "anglais": "en-EN"
-        };
-        let currentLanguage = StorageUtil.getReaderConfig(option) || "";
-
-        let newCurrentLanguage = languageMap[value] || currentLanguage;
-        if (newCurrentLanguage !== currentLanguage) {
-
-          StorageUtil.setReaderConfig(option, newCurrentLanguage);
-          this.props.handleChangeLanguage(newCurrentLanguage);
-        }
         break;
 
     }

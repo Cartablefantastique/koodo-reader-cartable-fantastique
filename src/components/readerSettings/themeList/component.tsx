@@ -138,12 +138,7 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
   initiateBookSpeech() {
     const event = new Event("startBookReading")
     window.dispatchEvent(event);
-    this.props.handleBookPlayingVoice(true);
-  }
 
-  stopSpeekingText() {
-    const event = new Event("stopSpeaking");
-    window.dispatchEvent(event);
   }
 
   render() {
@@ -311,17 +306,16 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
         </div>
         <div className="btn-control-reading">
           <button
-            onClick={() => this.initiateBookSpeech()}
+            onClick={() => this.props.startBookReading(true)}
+            disabled={this.props.isBookReading}
             className="btn-control-reader"
           >
             <img src={lecture} alt="Lecture du texte" />
           </button>
 
           <button
-            onClick={() => {
-              const propretyPauseChanged = this.props.myPauseProperty ? false : true
-              this.props.handleBookPlayingVoice(propretyPauseChanged);
-            }}
+            onClick={() => this.props.stopBookReading(false)}
+            disabled={!this.props.isBookReading}
             className="btn-control-reader"
           >
             <img src={stop} alt="Arrête le lecture" />

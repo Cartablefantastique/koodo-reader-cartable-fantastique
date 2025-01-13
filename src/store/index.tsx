@@ -60,7 +60,7 @@ export type stateType = {
     isOpenAddDialog: boolean;
     isOpenActionDialog: boolean;
     isReading: boolean;
-    myPauseProperty: boolean,
+    isBookReading: boolean,
     readingRate: number,
     langSpeaking: string,
     dragItem: string;

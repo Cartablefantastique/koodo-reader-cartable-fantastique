@@ -10,7 +10,7 @@ export interface ViewerProps {
   menuMode: string;
   notes: Note[];
   isReading: boolean;
-  myPauseProperty: boolean,
+  isBookReading: boolean,
   readingRate: number,
   langSpeaking: string,
   mode: string;
@@ -22,7 +22,9 @@ export interface ViewerProps {
   renderNoteFunc: () => void;
   t: (title: string) => string;
   handleReadingState: (isReading: boolean) => void;
-  handleBookPlayingVoice: (myPauseProperty: boolean) => void;
+  stopBookReading: (isBookReading: boolean) => void;
+  startBookReading: (isBookReading: boolean) => void;
+  handleChangeLanguage: (langSpeaking: string) => void;
   handleReadingBook: (book: Book) => void;
   handleHtmlBook: (htmlBook: HtmlBook | null) => void;
   handleLeaveReader: (position: string) => void;

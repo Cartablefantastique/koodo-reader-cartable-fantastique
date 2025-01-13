@@ -4,7 +4,7 @@ const initState = {
   isOpenAddDialog: false,
   isOpenActionDialog: false,
   isReading: false,
-  myPauseProperty: false,
+  isBookReading: false,
   readingRate: 0,
   langSpeaking: "",
   dragItem: "",
@@ -61,10 +61,15 @@ export function book(
         ...state,
         isReading: action.payload,
       };
-    case "HANDLE_Playing_VOICE_BOOK":
+    case "STOP_BOOK_READING":
       return {
         ...state,
-        myPauseProperty: action.payload
+        isBookReading: action.payload
+      }
+    case "START_BOOK_READING":
+      return {
+        ...state,
+        isBookReading: action.payload
       }
     case "HANDLE_CHANGE_READING_RATE":
       return {

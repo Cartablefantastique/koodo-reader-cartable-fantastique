@@ -21,14 +21,12 @@ import Note from "../../models/Note";
 import PageWidget from "../../containers/pageWidget";
 import { scrollContents } from "../../utils/commonUtil";
 
-
-
 declare var window: any;
 let lock = false; //prevent from clicking too fasts
 
 class Viewer extends React.Component<ViewerProps, ViewerState> {
   lock: boolean;
-
+  isComponentMounted: boolean = false; // pour suivre l'état du montage du composant.
   constructor(props: ViewerProps) {
     super(props);
     this.state = {
@@ -57,7 +55,7 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
       words: [],
       currentWordIndex: null,
       rateStored: StorageUtil.getReaderConfig("readingRate"),
-      langStored: StorageUtil.getReaderConfig("speakingLanguage")
+      langStored: StorageUtil.getReaderConfig("langSpeaking")
 
     };
     this.lock = false;
@@ -86,13 +84,7 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
     window.addEventListener("removeStyles", () => {
       this.disableBackgroundColor();
     })
-    window.addEventListener("startBookReading", async () => {
-      await this.handleBookVoice();
-    })
 
-    window.addEventListener("stopSpeaking", () => {
-      this.handleStop();
-    })
     const changeColorsTriggered = StorageUtil.getReaderConfig("changeColorsTriggered") === "true";
 
     this.handleChangeStyle(changeColorsTriggered);
@@ -100,20 +92,34 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
   }
 
   componentWillUnmount() {
+
     //écouteur d’événement est nettoyé lorsque le composant se démonte
     window.removeEventListener("localStorageChange", this.handleLocalStorageChange);
     window.removeEventListener("removeStyles", this.disableBackgroundColor)
-    window.removeEventListener("startBookReading", this.handleBookVoice)
-    window.removeEventListener("stopSpeaking", this.handleStop)
+
+
   }
+
 
   componentDidUpdate(prevProps) {
-    if (prevProps.myPauseProperty !== this.props.myPauseProperty) {
-      this.syncPlaybackWithStatus();
+    const { rendition } = this.state;
+    const { isBookReading, } = this.props;
+
+    if ((prevProps.isBookReading !== isBookReading)) {
+      if (isBookReading) {
+        if (rendition) {
+          this.handleBookVoice();
+        } else {
+          console.error("rendition has not initialized")
+        }
+      } else {
+        this.stopBookReading();
+      }
     }
-
-
   }
+
+
+
 
   handleChangeStyle = async (changeColorsTriggered: boolean) => {
     if (changeColorsTriggered) {
@@ -311,7 +317,11 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
           );
 
           rendition.on("rendered", () => {
-            this.handleSpeakText(rendition);
+            if (this.props.isBookReading) {
+              this.handleSpeakText(rendition); // Ne lit que si la lecture est active
+            }
+
+
 
           })
 
@@ -328,7 +338,7 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
 
 
   handleSpeakText = (rendition) => {
-    if (!rendition) return;
+    if (!this.props.isBookReading || !rendition) return;
 
     const iframe = rendition.element?.querySelector("iframe");
     if (!iframe) {
@@ -348,6 +358,7 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
     let allWords: string[] = [];
     paragraphs.forEach((p) => {
       const lines = this.selectLines(p);
+
       lines.forEach((line) => {
         allWords = [...allWords, ...line.split(/\s+/).filter((e) => e.trim() !== "")];
       });
@@ -357,46 +368,44 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
 
   };
 
-  handleStop = () => {
-
+  // Méthode pour arrêter la lecture
+  stopBookReading = () => {
     speechSynthesis.cancel();
-    this.props.handleBookPlayingVoice(false);
-    this.setState({ currentWordIndex: null })
-  }
-
+  };
 
   // Nouvelle méthode pour synchroniser la lecture avec le statut
   syncPlaybackWithStatus = () => {
-    const { myPauseProperty } = this.props;
+    const { isBookReading } = this.props;
 
-    if (myPauseProperty && speechSynthesis.speaking) {
+    if (isBookReading && speechSynthesis.speaking) {
       // Reprendre la lecture si elle est en pause
       speechSynthesis.resume();
 
-    } else if (!myPauseProperty && speechSynthesis.speaking) {
+    } else if (!isBookReading && speechSynthesis.speaking) {
       // Mettre en pause la lecture
       speechSynthesis.pause();
 
     }
     // Si le myPauseProperty est à true mais qu'aucune lecture n'est en cours, démarre
-    else if (myPauseProperty && !speechSynthesis.speaking) {
+    else if (isBookReading && !speechSynthesis.speaking) {
       this.readWord();
     }
   };
 
   readWord = () => {
-    const { words, currentWordIndex, rateStored, langStored } = this.state;
-    const { readingRate, langSpeaking } = this.props;
 
-    if (currentWordIndex === null || currentWordIndex >= words.length || speechSynthesis.pending) {
-      this.handleStop(); // Arrête si tous les mots sont lus
+    const { words, currentWordIndex, rateStored } = this.state;
+    const { readingRate } = this.props;
+
+    if (currentWordIndex === null || currentWordIndex >= words.length) {
+      this.stopBookReading(); // Arrête si tous les mots sont lus
       return;
     }
 
     // Lire le mot courant
     const utterance = new SpeechSynthesisUtterance(words[currentWordIndex]);
-    utterance.lang = langSpeaking ? langSpeaking : langStored;
-    utterance.rate = readingRate ? readingRate : rateStored;
+    utterance.lang = "fr-FR"
+    utterance.rate = readingRate || rateStored;
 
     utterance.onend = () => {
       // Passe au mot suivant après la lecture
@@ -406,33 +415,43 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
       );
 
     };
-
     speechSynthesis.speak(utterance);
-    this.highlightWord(words[currentWordIndex]);
+    this.highlightWord(currentWordIndex);
+
   };
 
 
-  highlightWord = (word) => {
+  highlightWord = (globalIndex: number) => {
     const doc = getIframeDoc();
     if (!doc) return;
 
     const paragraphs = doc.querySelectorAll("p.kookit-text");
-    const escapeRegExp = (string) => {
-      return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Échappe les caractères spéciaux
-    };
-    const escapedWord = escapeRegExp(word);
+    let wordCounter = 0; // Compteur global des mots
 
     paragraphs.forEach((p) => {
       const text = p.textContent || "";
-      const highlightedText = text.replace(
-        //Permet de trouver et surligner uniquement le mot entier (non une sous-chaîne).
-        new RegExp(`\\b${escapedWord}\\b`, "g"),
-        `<span style="background-color: yellow;">${word}</span>`
-      );
+      const words = text.split(/\s+/).filter((word) => word.trim() !== "");
 
-      p.innerHTML = highlightedText;
+      // Réinitialise le contenu du paragraphe sans surbrillance
+      const updatedWords = words.map((w) => `<span>${w}</span>`);
+
+      // Vérifie si le mot courant appartient à ce paragraphe
+      const start = wordCounter;
+      const end = wordCounter + words.length - 1;
+
+      if (globalIndex >= start && globalIndex <= end) {
+        // Calcule l'index relatif pour le paragraphe courant
+        const relativeIndex = globalIndex - start;
+        updatedWords[relativeIndex] = `<span style="background-color: yellow;">${words[relativeIndex]}</span>`;
+      }
+
+      // Met à jour le contenu HTML du paragraphe
+      p.innerHTML = updatedWords.join(" ");
+      wordCounter += words.length;
     });
-  };
+
+  }
+
 
 
   /**

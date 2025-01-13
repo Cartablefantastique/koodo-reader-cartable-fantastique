@@ -25,8 +25,11 @@ export function handleReadingState(state: boolean) {
   return { type: "HANDLE_READING_STATE", payload: state };
 }
 
-export function handleBookPlayingVoice(myPauseProperty: boolean) {
-  return { type: "HANDLE_Playing_VOICE_BOOK", payload: myPauseProperty };
+export function stopBookReading(isBookReading: boolean) {
+  return { type: "STOP_BOOK_READING", payload: isBookReading };
+}
+export function startBookReading(isBookReading: boolean) {
+  return { type: "START_BOOK_READING", payload: isBookReading };
 }
 
 export function handleChangeReadingRate(readingRate: number) {

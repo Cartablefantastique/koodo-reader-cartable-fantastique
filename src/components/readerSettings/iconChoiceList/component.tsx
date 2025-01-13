@@ -186,6 +186,8 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
     },
   ]
 
+
+
   componentDidMount() {
     this.loadGoogleFonts(["Arial", "Verdana"]);
   }
@@ -309,7 +311,12 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
       return this.iconChoiceList.map((item) => (
         <li className="paragraph-character-container" key={item.id}>
           <p className="general-setting-title">
-            <Trans>{item.title}</Trans>
+
+            <Trans>{item.title}   </Trans> :
+            <span className="itemValue">
+              {StorageUtil.getReaderConfig(item.value)}
+            </span>
+
           </p>
 
           {item.icons.map((imgProps: any, index: number) => (

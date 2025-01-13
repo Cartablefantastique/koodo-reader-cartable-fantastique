@@ -356,7 +356,9 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
 
     // Récupérer tous les mots de tous les paragraphes
     let allWords: string[] = [];
-    paragraphs.forEach((p) => {
+    paragraphs.forEach((p, index) => {
+
+      console.log("each p", p, "index of p", index)
       const lines = this.selectLines(p);
 
       lines.forEach((line) => {

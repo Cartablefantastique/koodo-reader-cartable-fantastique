@@ -12,4 +12,5 @@ export interface IconChoiceListState {
   // currentLineHeightIndex: number;
   // currentTextAlignIndex: number;
   // chineseConversionIndex: number;
+
 }

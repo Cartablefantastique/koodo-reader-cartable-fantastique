@@ -14,6 +14,7 @@
 }
 .empty-illustration-container {
   height: 350px;
+  width: 50vw;
   position: absolute;
   right: 0;
   bottom: 0;
@@ -37,4 +38,24 @@
 
   line-height: 30px;
   opacity: 0.49;
+}
+
+@media (max-width: 640px) {
+  .empty-page-info-sub {
+    width: fit-content
+  }
+  .empty-page-info-container {
+    position: absolute;
+    left: 70px;
+    top: 80px;
+  }
+  
+  .empty-page-container {
+    top: 0px !important; 
+    left: 0px !important;
+    width: calc(100vw - 50px) !important;
+    height: calc(100vh) !important;
+    display: flex;
+    justify-content:center;
+  }
 }

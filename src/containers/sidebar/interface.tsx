@@ -21,4 +21,5 @@ export interface SidebarState {
   isCollapsed: boolean;
   shelfIndex: number;
   isOpenDelete: boolean;
+  windowWidth: number;
 }

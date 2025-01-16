@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./sidebar.css";
 import { sideMenu } from "../../constants/sideMenu";
 import { SidebarProps, SidebarState } from "./interface";
@@ -16,17 +16,21 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
       hoverShelfIndex: -1,
       isOpenDelete: false,
       shelfIndex: 0,
+      windowWidth: window.innerWidth,
       isCollapsed:
-        StorageUtil.getReaderConfig("isCollapsed") === "yes" || false,
+      window.innerWidth < 640 ? true : (StorageUtil.getReaderConfig("isCollapsed") === "yes" || false)
     };
   }
+
   componentDidMount() {
     this.props.handleMode(
       document.URL.split("/").reverse()[0] === "empty"
         ? "home"
         : document.URL.split("/").reverse()[0]
     );
+    window.onresize = () => window.innerWidth < 640 ? this.handleCollapse(true) : this.handleCollapse(this.state.isCollapsed);
   }
+  
   handleSidebar = (mode: string, index: number) => {
     this.setState({ index: index });
     this.props.handleSelectBook(false);

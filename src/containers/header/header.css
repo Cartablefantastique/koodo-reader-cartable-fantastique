@@ -176,4 +176,7 @@
   .header-search-container {
     width: 220px;
   }
+  .setting-icon-container {
+    margin-left: 0px;
+  }
 }

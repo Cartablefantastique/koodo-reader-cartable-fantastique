@@ -99,7 +99,7 @@ class Redirect extends React.Component<RedirectProps, RedirectState> {
 
     return (
       <div className="manager">
-        <div className="empty-page-info-container" style={{ margin: 100 }}>
+        <div className="empty-page-info-container">
           <div className="empty-page-info-main">
             <Trans>It seems like you're lost</Trans>
           </div>

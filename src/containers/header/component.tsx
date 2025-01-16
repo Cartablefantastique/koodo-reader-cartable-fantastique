@@ -210,7 +210,6 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     return (
       <div
         className="header"
-        style={this.props.isCollapsed ? { marginLeft: "40px" } : {}}
       >
         <div
           className="header-search-container"

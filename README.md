@@ -1,14 +1,3 @@
-<div align="left">
-
-[简体中文](https://github.com/koodo-reader/koodo-reader/blob/master/README_cn.md) | [हिंदी](https://github.com/koodo-reader/koodo-reader/blob/master/README_hi.md)
-|[Português](https://github.com/koodo-reader/koodo-reader/blob/master/README_pt.md) | English
-
-</div>
-
-<div align="center" >
-  <img src="https://dl.koodoreader.com/screenshots/logo.png" width="96px" height="96px"/>
-</div>
-
 <h1 align="center">
   Cartable Fantastique Reader
 </h1>

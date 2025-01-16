@@ -7,7 +7,6 @@ import StorageUtil from "../../utils/serviceUtils/storageUtil";
 import { openExternalUrl } from "../../utils/serviceUtils/urlUtil";
 import ShelfUtil from "../../utils/readUtils/shelfUtil";
 import DeletePopup from "../../components/dialogs/deletePopup";
-import { Trans } from "react-i18next";
 class Sidebar extends React.Component<SidebarProps, SidebarState> {
   constructor(props: SidebarProps) {
     super(props);
@@ -15,7 +14,6 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
       index: 0,
       hoverIndex: -1,
       hoverShelfIndex: -1,
-      isCollpaseShelf: false,
       isOpenDelete: false,
       shelfIndex: 0,
       isCollapsed:
@@ -133,89 +131,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
         );
       });
     };
-    const renderSideShelf = () => {
-      let shelfList = ShelfUtil.getShelf();
-      let shelfTitle = Object.keys(shelfList);
 
-      return shelfTitle.map((item, index) => {
-        return (
-          <li
-            key={item}
-            className={
-              this.props.shelfIndex === index
-                ? "active side-menu-item"
-                : "side-menu-item"
-            }
-            id={`sidebar-${index}`}
-            onClick={() => {
-              this.props.handleShelfIndex(index);
-              if (index > 0) {
-                this.props.handleMode("shelf");
-              } else {
-                this.props.handleMode("home");
-              }
-              this.setState({ index: -1 });
-              this.props.history.push("/manager/shelf");
-            }}
-            onMouseEnter={() => {
-              this.handleShelfHover(index);
-            }}
-            onMouseLeave={() => {
-              this.handleShelfHover(-1);
-            }}
-            style={
-              index === 0
-                ? { display: "none" }
-                : this.props.isCollapsed
-                ? { width: 40, marginLeft: 15 }
-                : {}
-            }
-          >
-            {this.props.shelfIndex === index ? (
-              <div className="side-menu-selector-container"></div>
-            ) : null}
-            {this.state.hoverShelfIndex === index ? (
-              <div className="side-menu-hover-container"></div>
-            ) : null}
-            <div
-              className={
-                this.props.shelfIndex === index
-                  ? "side-menu-selector active-selector"
-                  : "side-menu-selector "
-              }
-            >
-              <div
-                className="side-menu-icon"
-                style={this.props.isCollapsed ? {} : { marginLeft: "38px" }}
-              >
-                <span
-                  className={
-                    this.props.shelfIndex === index
-                      ? `icon-bookshelf-line  active-icon sidebar-shelf-icon`
-                      : `icon-bookshelf-line sidebar-shelf-icon`
-                  }
-                  style={
-                    this.props.isCollapsed
-                      ? { position: "relative", marginLeft: "-8px" }
-                      : {}
-                  }
-                ></span>
-              </div>
-
-              <span
-                style={
-                  this.props.isCollapsed
-                    ? { display: "none", width: "70%" }
-                    : { width: "60%" }
-                }
-              >
-                {this.props.t(item)}
-              </span>
-            </div>
-          </li>
-        );
-      });
-    };
     const deletePopupProps = {
       mode: "shelf",
       name: Object.keys(ShelfUtil.getShelf())[this.state.shelfIndex],
@@ -227,8 +143,16 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
     return (
       <>
         <div className="sidebar">
+        <img
+            src="./assets/icon.png"
+            alt="Icone du cartable fantastique"
+            onClick={() => {
+              this.handleJump("https://www.cartablefantastique.fr/");
+            }}
+            className="logo u-mobile"
+          />
           <div
-            className="sidebar-list-icon"
+            className="sidebar-list-icon u-no-mobile"
             onClick={() => {
               this.handleCollapse(!this.state.isCollapsed);
             }}
@@ -244,9 +168,9 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
                 ? "./assets/label_light.png"
                 : "./assets/label.png"
             }
-            alt=""
+            alt="Icone du cartable fantastique"
             onClick={() => {
-              this.handleJump("https://koodoreader.com");
+              this.handleJump("https://www.cartablefantastique.fr/");
             }}
             style={this.state.isCollapsed ? { display: "none" } : {}}
             className="logo"
@@ -256,37 +180,6 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
             style={this.state.isCollapsed ? { width: "70px" } : {}}
           >
             <ul className="side-menu-container">{renderSideMenu()}</ul>
-            <div
-              className="side-shelf-title-container"
-              style={
-                this.state.isCollapsed
-                  ? { display: "none" }
-                  : this.state.isCollpaseShelf
-                  ? {}
-                  : { border: "none" }
-              }
-            >
-              <div className="side-shelf-title">
-                <Trans>Shelf</Trans>
-              </div>
-              <span
-                className="icon-dropdown side-shelf-title-icon"
-                onClick={() => {
-                  this.setState({
-                    isCollpaseShelf: !this.state.isCollpaseShelf,
-                  });
-                }}
-                style={
-                  this.state.isCollpaseShelf
-                    ? { transform: "rotate(-90deg)" }
-                    : {}
-                }
-              ></span>
-            </div>
-
-            {!this.state.isCollpaseShelf && (
-              <ul className="side-shelf-container">{renderSideShelf()}</ul>
-            )}
           </div>
         </div>
         {this.state.isOpenDelete && <DeletePopup {...deletePopupProps} />}

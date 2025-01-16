@@ -214,13 +214,11 @@ class Header extends React.Component<HeaderProps, HeaderState> {
       >
         <div
           className="header-search-container"
-          style={this.props.isCollapsed ? { width: "369px" } : {}}
         >
           <SearchBox />
         </div>
         <div
           className="setting-icon-parrent"
-          style={this.props.isCollapsed ? { marginLeft: "430px" } : {}}
         >
           <div
             className="setting-icon-container"

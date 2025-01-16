@@ -1,5 +1,5 @@
 .header-search-box {
-  width: calc(100% - 20px);
+  width: -webkit-fill-available;
   height: 39px;
   border-radius: 22px;
   border-style: none;

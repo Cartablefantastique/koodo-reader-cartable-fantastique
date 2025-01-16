@@ -16,12 +16,12 @@
   width: 210px;
   height: calc(100% - 100px);
   overflow-x: hidden;
-  overflow-y: scroll;
+  overflow-y: hidden;
 }
 .side-menu-container-parent:hover::-webkit-scrollbar-thumb,
 .side-menu-container-parent:active::-webkit-scrollbar-thumb,
 .side-menu-container-parent:focus::-webkit-scrollbar-thumb {
-  display: block;
+  display: none;
   width: 1px;
 }
 .side-menu-container-parent::-webkit-scrollbar-thumb {
@@ -188,4 +188,14 @@
 
 .icon-idea {
   font-size: 20px;
+}
+
+@media (max-width: 640px) {
+  .logo {
+    width: 68px;
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    cursor: pointer;
+  }
 }

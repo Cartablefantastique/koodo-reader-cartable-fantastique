@@ -19,7 +19,6 @@ export interface SidebarState {
   hoverIndex: number;
   hoverShelfIndex: number;
   isCollapsed: boolean;
-  isCollpaseShelf: boolean;
   shelfIndex: number;
   isOpenDelete: boolean;
 }

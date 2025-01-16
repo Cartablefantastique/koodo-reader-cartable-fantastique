@@ -127,7 +127,7 @@
 .setting-icon-parrent {
   position: absolute;
   top: 18px;
-  margin-left: 280px;
+  margin-left: 350px;
   height: 50px;
   z-index: 1;
 }
@@ -135,7 +135,7 @@
   position: absolute;
   top: 23px;
   margin-left: 40px;
-  width: 220px;
+  width: 290px;
 }
 .setting-icon {
   float: left;
@@ -167,4 +167,13 @@
   align-items: center;
   margin-left: 15px;
   float: left;
+}
+
+@media (max-width: 640px) {
+  .setting-icon-parrent {
+    margin-left: 280px;
+  }
+  .header-search-container {
+    width: 220px;
+  }
 }

@@ -1,7 +1,6 @@
 import React from "react";
 import "./header.css";
 import SearchBox from "../../components/searchBox";
-import ImportLocal from "../../components/importLocal";
 import { HeaderProps, HeaderState } from "./interface";
 import StorageUtil from "../../utils/serviceUtils/storageUtil";
 import UpdateInfo from "../../components/dialogs/updateDialog";
@@ -310,11 +309,6 @@ class Header extends React.Component<HeaderProps, HeaderState> {
             <Trans>Report</Trans>
           </div>
         )}
-        <ImportLocal
-          {...{
-            handleDrag: this.props.handleDrag,
-          }}
-        />
         <UpdateInfo />
       </div>
     );

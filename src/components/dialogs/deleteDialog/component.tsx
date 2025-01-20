@@ -64,6 +64,7 @@ class DeleteDialog extends React.Component<
       await this.deleteAllBookInTrash();
     } else {
       this.deleteBooks();
+      await this.deleteAllBookInTrash();
     }
 
     this.props.handleDeleteDialog(false);

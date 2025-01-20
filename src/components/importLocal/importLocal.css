@@ -1,5 +1,5 @@
 .import-from-local {
-  position: fixed;
+  position: initial;
   right: 0px;
   top: 0px;
   width: 138px;
@@ -38,4 +38,13 @@
   align-items: center;
   justify-content: center;
   z-index: 10;
+}
+
+.side-menu-addbooks {
+  width: 100%;
+  height: 39px;
+  border-radius: 25px;
+  line-height: 39px;
+  z-index: -1;
+  animation: slidein 0.1s ease-in-out 0s 1;
 }

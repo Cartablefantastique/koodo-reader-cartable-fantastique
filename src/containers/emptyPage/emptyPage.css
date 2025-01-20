@@ -12,20 +12,10 @@
   bottom: 30px;
   right: 40px;
 }
-.empty-illustration-container {
-  height: 350px;
-  width: 50vw;
-  position: absolute;
-  right: 0;
-  bottom: 0;
 
-  z-index: -1;
-  overflow: hidden;
-}
 .empty-page-info-container {
   position: absolute;
   left: 30px;
-  top: 80px;
 }
 .empty-page-info-main {
   font-size: 32px;
@@ -46,16 +36,16 @@
   }
   .empty-page-info-container {
     position: absolute;
-    left: 70px;
-    top: 80px;
+    top: 0px;
+    left: 0px;
   }
   
   .empty-page-container {
-    top: 0px !important; 
-    left: 0px !important;
-    width: calc(100vw - 50px) !important;
-    height: calc(100vh) !important;
+    top: 80px;
+    left: 70px;
+    width: calc(100vw - 120px) !important;
+    height: calc(100vh - 80px) !important;
     display: flex;
-    justify-content:center;
+    justify-content: left;
   }
 }

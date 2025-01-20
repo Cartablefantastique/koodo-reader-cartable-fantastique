@@ -7,6 +7,8 @@ import StorageUtil from "../../utils/serviceUtils/storageUtil";
 import { openExternalUrl } from "../../utils/serviceUtils/urlUtil";
 import ShelfUtil from "../../utils/readUtils/shelfUtil";
 import DeletePopup from "../../components/dialogs/deletePopup";
+import ImportLocal from "../../components/importLocal";
+
 class Sidebar extends React.Component<SidebarProps, SidebarState> {
   constructor(props: SidebarProps) {
     super(props);
@@ -183,7 +185,21 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
             className="side-menu-container-parent"
             style={this.state.isCollapsed ? { width: "70px" } : {}}
           >
-            <ul className="side-menu-container">{renderSideMenu()}</ul>
+            
+            <ul className="side-menu-container">
+            <li
+            key={"side-menu-item-addbooks"}
+            className={"side-menu-item"}
+            id={`sidebar-add-books`}
+            style={this.props.isCollapsed ? { width: 40, marginLeft: 15 } : {}}
+          >
+                <ImportLocal
+                      {...{
+                        handleDrag: this.props.handleDrag,
+                      }}
+                />
+              </li>
+              {renderSideMenu()}</ul>
           </div>
         </div>
         {this.state.isOpenDelete && <DeletePopup {...deletePopupProps} />}

@@ -3,7 +3,6 @@ import "./importLocal.css";
 import BookModel from "../../models/Book";
 
 import { fetchMD5 } from "../../utils/fileUtils/md5Util";
-import { Trans } from "react-i18next";
 import Dropzone from "react-dropzone";
 
 import { ImportLocalProps, ImportLocalState } from "./interface";
@@ -262,35 +261,50 @@ class ImportLocal extends React.Component<ImportLocalProps, ImportLocalState> {
         multiple={true}
       >
         {({ getRootProps, getInputProps }) => (
-          <div
-            className="import-from-local"
-            {...getRootProps()}
-            style={
-              this.props.isCollapsed && document.body.clientWidth < 950
-                ? { width: "42px" }
-                : {}
-            }
-          >
-            <div className="animation-mask-local"></div>
-            {this.props.isCollapsed && this.state.width < 950 ? (
-              <span
-                className="icon-folder"
-                style={{ fontSize: "15px", fontWeight: 500 }}
-              ></span>
-            ) : (
-              <span>
-                <Trans>Import</Trans>
-              </span>
-            )}
+          <>
+            <div className="side-menu-hover-container"></div>
 
-            <input
-              type="file"
-              id="import-book-box"
-              className="import-book-box"
-              name="file"
-              {...getInputProps()}
-            />
-          </div>
+            <div
+              className="side-menu-selector side-menu-addbooks"
+              {...getRootProps()}
+              style={
+                this.props.isCollapsed && document.body.clientWidth < 640
+                  ? { width: "39px" }
+                  : {}
+              }
+            >
+              <div className="side-menu-icon" style={this.props.isCollapsed ? {} : { marginLeft: "38px" }}>
+
+                <span
+                  className="icon-folder"
+                  style={
+                    this.props.isCollapsed
+                      ? { position: "relative", marginLeft: "-9px" }
+                      : {}
+                  }
+                ></span>
+
+
+
+                <input
+                  type="file"
+                  id="import-book-box"
+                  className="import-book-box"
+                  name="file"
+                  {...getInputProps()}
+                />
+              </div>
+              <span
+                  style={
+                    this.props.isCollapsed
+                      ? { display: "none", width: "70%" }
+                      : { width: "60%" }
+                  }
+                >
+                  Ajouter un livre
+                </span>
+            </div>
+          </>
         )}
       </Dropzone>
     );

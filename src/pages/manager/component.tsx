@@ -133,7 +133,7 @@ class Manager extends React.Component<ManagerProps, ManagerState> {
             )}
           </div>
         )}
-        <Sidebar />
+        <Sidebar {...{ handleDrag: this.handleDrag }}/>
         <Toaster />
         <Header {...{ handleDrag: this.handleDrag }} />
         {this.props.isOpenDeleteDialog && <DeleteDialog />}

@@ -90,7 +90,7 @@
   .import-from-local {
     position: fixed !important;
     left: 15px;
-    top: calc(100vh - 80px) !important;
+    top: 150px !important;
     width: 138px;
     padding: 0px !important;
   }
@@ -171,13 +171,14 @@
 
 @media (max-width: 640px) {
   .setting-icon-parrent {
-    margin-left: 280px;
+    margin-left: calc(100vw - 100px);
   }
   .header-search-container {
     width: 220px;
   }
   .setting-icon-container {
     margin-left: 0px;
+    float:none;
   }
   .header {
     margin-left: 40px;

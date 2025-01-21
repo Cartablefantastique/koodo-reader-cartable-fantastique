@@ -115,13 +115,7 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
         this.stopBookReading();
       }
     }
-
-
   }
-
-
-
-
   handleChangeStyle = async (changeColorsTriggered: boolean) => {
     if (changeColorsTriggered) {
       await this.handleRenderBookWithLinesColor();
@@ -625,7 +619,6 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
     StyleUtil.addDefaultCss();
     tsTransform();
     binicReadingProcess();
-    // rendition.setStyle(StyleUtil.getCustomCss());
     let bookLocation: {
       text: string;
       count: string;

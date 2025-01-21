@@ -13,13 +13,13 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
     super(props);
 
     this.state = ({
-      currentValueFontSize: StorageUtil.getReaderConfig("fontSize"),
-      currentValueWordSpacing: StorageUtil.getReaderConfig("wordSpacing"),
-      currentValueFontFamily: StorageUtil.getReaderConfig("fontFamily"),
-      currentValueLineHeight: StorageUtil.getReaderConfig("lineHeight"),
-      currentValueLetterSpace: StorageUtil.getReaderConfig("letterSpacing"),
-      currentValueTextAlign: StorageUtil.getReaderConfig("textAlign"),
-      currentValueMarge: StorageUtil.getReaderConfig("margin"),
+      currentValueFontSize: StorageUtil.getReaderConfig("fontSize") || 5,
+      currentValueWordSpacing: StorageUtil.getReaderConfig("wordSpacing") || 5,
+      currentValueFontFamily: StorageUtil.getReaderConfig("fontFamily") || "Arial",
+      currentValueLineHeight: StorageUtil.getReaderConfig("lineHeight") || 1,
+      currentValueLetterSpace: StorageUtil.getReaderConfig("letterSpacing") || 5,
+      currentValueTextAlign: StorageUtil.getReaderConfig("textAlign") || "left",
+      currentValueMarge: StorageUtil.getReaderConfig("margin") || 10,
     })
 
   }
@@ -127,7 +127,9 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
           StorageUtil.resetReaderConfig(option)
         }
         break;
-
+      default: StorageUtil.defaultReaderConfig();
+        BookUtil.reloadBooks()
+        return;
     }
     const changeColorsTriggered = StorageUtil.getReaderConfig("changeColorsTriggered") === "true";
     if (changeColorsTriggered) {

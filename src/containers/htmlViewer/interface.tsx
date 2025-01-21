@@ -61,7 +61,6 @@ export interface ViewerState {
   words: string[],
   currentWordIndex: number,
   rateStored: number,
-  langStored: string,
   paragraphesWords: ParagraphesWords[],
   highlightText: number,
 

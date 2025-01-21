@@ -2,6 +2,8 @@ import { connect } from "react-redux";
 import {
   handleActionDialog,
   handleReadingState,
+  stopBookReading,
+  handleChangeReadingRate,
   handleReadingBook,
   handleHtmlBook,
   handleRenderBookFunc,
@@ -16,6 +18,8 @@ import {
   handleFetchBookmarks,
   handlePercentage,
   handleFetchPercentage,
+  handleChangeLanguage,
+  startBookReading,
 
 } from "../../store/actions";
 import Viewer from "./component";
@@ -27,6 +31,9 @@ const mapStateToProps = (state: stateType) => {
     isOpenActionDialog: state.book.isOpenActionDialog,
     currentBook: state.book.currentBook,
     isReading: state.book.isReading,
+    isBookReading: state.book.isBookReading,
+    readingRate: state.book.readingRate,
+    langSpeaking: state.book.langSpeaking,
     renderNoteFunc: state.book.renderNoteFunc,
     htmlBook: state.reader.htmlBook,
     isOpenMenu: state.viewArea.isOpenMenu,
@@ -37,6 +44,10 @@ const mapStateToProps = (state: stateType) => {
 };
 const actionCreator = {
   handleReadingState,
+  stopBookReading,
+  startBookReading,
+  handleChangeReadingRate,
+  handleChangeLanguage,
   handleReadingBook,
   handleActionDialog,
   handleHtmlBook,

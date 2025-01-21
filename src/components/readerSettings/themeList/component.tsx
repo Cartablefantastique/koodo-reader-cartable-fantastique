@@ -12,7 +12,8 @@ import BookUtil from "../../../utils/fileUtils/bookUtil";
 import Lignescouleurs1 from "../../../assets/Lignescouleurs1.png"
 import SurLignerLignes2 from "../../../assets/SurLignerLignes2.png";
 import gomme1 from "../../../assets/gomme1.png";
-
+import lecture from "../../../assets/icons/lecture.jpg"
+import stop from "../../../assets/icons/stop.jpg"
 class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
   constructor(props: ThemeListProps) {
     super(props);
@@ -41,6 +42,7 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
 
     };
   }
+
   handleChangeBgColor = (color: string, index: number = -1) => {
     StorageUtil.setReaderConfig("backgroundColor", color);
     this.setState({
@@ -133,8 +135,14 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
     window.dispatchEvent(event);
   }
 
+  initiateBookSpeech() {
+    const event = new Event("startBookReading")
+    window.dispatchEvent(event);
+
+  }
 
   render() {
+
     const renderBackgroundColorList = () => {
       return backgroundList
         .concat(ThemeUtil.getAllThemes())
@@ -190,7 +198,7 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
 
     return (
       <div className="background-color-setting">
-        <div className="background-color-text">
+        <div className="general-setting-title">
           <Trans>Background color</Trans>
         </div>
         <ul className="background-color-list">
@@ -219,7 +227,7 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
             }}
           />
         )}
-        <div className="background-color-text">
+        <div className="general-setting-title">
           <Trans>Text color</Trans>
         </div>
         <ul className="background-color-list">
@@ -249,7 +257,7 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
           />
         )}
 
-        <div className="background-color-line">
+        <div className="general-setting-title">
           <Trans>Colorier Les Lignes</Trans>
         </div>
         <div className="grp-btn-change-color-line">
@@ -271,7 +279,7 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
 
         </div>
 
-        <div className="background-color-line">
+        <div className="general-setting-title">
           <Trans>Surligner Les Lignes</Trans>
         </div>
         <div className="grp-btn-highlight-line">
@@ -292,6 +300,33 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
           </button>
 
         </div>
+
+        <div className="general-setting-title">
+          <Trans>Lire le texte</Trans>
+        </div>
+        <div className="btn-control-reading">
+          <button
+            onClick={() => this.props.startBookReading(true)}
+            disabled={this.props.isBookReading}
+            className="btn-control-reader"
+          >
+            <img
+              className="cursor-pointer icons-option"
+              src={lecture} alt="Lecture du texte" />
+          </button>
+
+          <button
+            onClick={() => this.props.stopBookReading(false)}
+            disabled={!this.props.isBookReading}
+            className="btn-control-reader"
+          >
+            <img
+              className="cursor-pointer icons-option"
+              src={stop} alt="Arrête le lecture" />
+          </button>
+
+        </div>
+
 
       </div>
     );

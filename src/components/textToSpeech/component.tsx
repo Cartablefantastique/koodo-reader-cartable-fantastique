@@ -11,7 +11,6 @@ import TTSUtil from "../../utils/serviceUtils/ttsUtil";
 import "./textToSpeech.css";
 import PluginList from "../../utils/readUtils/pluginList";
 import { openExternalUrl } from "../../utils/serviceUtils/urlUtil";
-import { highlightWordsDirectly } from "../../utils/readUtils/handleSpeak";
 
 class TextToSpeech extends React.Component<
   TextToSpeechProps,
@@ -178,54 +177,6 @@ class TextToSpeech extends React.Component<
     }
   }
 
-  // async handleSystemRead(index) {
-  //   let currentText = this.nodeList[index];
-  //   let style = "background: #f3a6a68c";
-  //   this.props.htmlBook.rendition.highlightNode(currentText, style);
-
-  //   let res = await this.handleSystemSpeech(
-  //     index,
-  //     parseInt(StorageUtil.getReaderConfig("voiceIndex")) || 0,
-  //     parseFloat(StorageUtil.getReaderConfig("voiceSpeed")) || 1
-  //   );
-
-  //   if (res === "start") {
-  //     index++;
-  //     if (
-  //       this.nodeList[index] ===
-  //       this.props.htmlBook.rendition.visibleText()[
-  //         this.props.htmlBook.rendition.visibleText().length - 1
-  //       ]
-  //     ) {
-  //       await this.props.htmlBook.rendition.next();
-  //     }
-  //     if (
-  //       this.state.isAudioOn &&
-  //       this.props.isReading &&
-  //       index === this.nodeList.length
-  //     ) {
-  //       let position = this.props.htmlBook.rendition.getPosition();
-  //       RecordLocation.recordHtmlLocation(
-  //         this.props.currentBook.key,
-  //         position.text,
-  //         position.chapterTitle,
-  //         position.chapterDocIndex,
-  //         position.chapterHref,
-  //         position.count,
-  //         position.percentage,
-  //         position.cfi,
-  //         position.page
-  //       );
-  //       this.nodeList = [];
-  //       await this.handleAudio();
-  //       return;
-  //     }
-  //     await this.handleSystemRead(index);
-  //   } else if (res === "end") {
-  //     return;
-  //   }
-  // }
-
   async handleSystemRead(index) {
     let currentText = this.nodeList[index]; // Texte actuel
     //let style = "background: #f3a6a68c";
@@ -246,16 +197,6 @@ class TextToSpeech extends React.Component<
             matchingElement = element as HTMLElement;
           }
         });
-
-        // 2. Si un élément correspondant est trouvé, appeler underlinesWords
-        if (matchingElement) {
-          console.log("Element trouvé :", matchingElement);
-
-          // Appeler la méthode underlinesWords
-          highlightWordsDirectly(currentText, matchingElement, "#FFD700"); // Couleur dorée pour le surlignage
-        } else {
-          console.warn("Aucun élément correspondant trouvé pour le texte :", currentText);
-        }
       }
     }
 
@@ -420,10 +361,7 @@ class TextToSpeech extends React.Component<
                     value={item}
                     className="lang-setting-option"
                     key={item}
-                    selected={
-                      item ===
-                      (StorageUtil.getReaderConfig("voiceSpeed") || "1")
-                    }
+                    defaultValue={StorageUtil.getReaderConfig("voiceSpeed") || "1"}
                   >
                     {item}
                   </option>

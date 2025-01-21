@@ -24,6 +24,22 @@ export function handleActionDialog(mode: boolean) {
 export function handleReadingState(state: boolean) {
   return { type: "HANDLE_READING_STATE", payload: state };
 }
+
+export function stopBookReading(isBookReading: boolean) {
+  return { type: "STOP_BOOK_READING", payload: isBookReading };
+}
+export function startBookReading(isBookReading: boolean) {
+  return { type: "START_BOOK_READING", payload: isBookReading };
+}
+
+export function handleChangeReadingRate(readingRate: number) {
+  return { type: "HANDLE_CHANGE_READING_RATE", payload: readingRate };
+}
+
+export function handleChangeLanguage(langSpeaking: string) {
+  return { type: "HANDLE_CHANGE_LANGUAGE_SPEAKING", payload: langSpeaking };
+}
+
 export function handleReadingBook(book: BookModel) {
   return { type: "HANDLE_READING_BOOK", payload: book };
 }

@@ -10,6 +10,10 @@ export interface ViewerProps {
   menuMode: string;
   notes: Note[];
   isReading: boolean;
+  isBookReading: boolean,
+  readingRate: number,
+  langSpeaking: string,
+  mode: string;
   htmlBook: HtmlBook;
   isShow: boolean;
   isOpenMenu: boolean;
@@ -18,6 +22,9 @@ export interface ViewerProps {
   renderNoteFunc: () => void;
   t: (title: string) => string;
   handleReadingState: (isReading: boolean) => void;
+  stopBookReading: (isBookReading: boolean) => void;
+  startBookReading: (isBookReading: boolean) => void;
+  handleChangeLanguage: (langSpeaking: string) => void;
   handleReadingBook: (book: Book) => void;
   handleHtmlBook: (htmlBook: HtmlBook | null) => void;
   handleLeaveReader: (position: string) => void;
@@ -51,6 +58,12 @@ export interface ViewerState {
   rect: any;
   rendition: any;
   isColorChanged: boolean;
+  words: string[],
+  currentWordIndex: number,
+  rateStored: number,
+  langStored: string,
+  paragraphesWords: ParagraphesWords[],
+  highlightText: number,
 
 }
 
@@ -58,4 +71,10 @@ export interface LineEnding {
   start: number;
   end: number;
   text: string;
+}
+
+export interface ParagraphesWords {
+  paragraph: Element,
+  wordParagraph: string,
+  indexWord: number,
 }

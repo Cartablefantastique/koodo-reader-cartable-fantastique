@@ -21,3 +21,4 @@ export interface PopupOptionProps {
   handleChangeDirection: (isChangeDirection: boolean) => void;
   t: (title: string) => string;
 }
+

@@ -1,6 +1,6 @@
 import React from "react";
 import RecentBooks from "../../utils/readUtils/recordRecent";
-import { ViewerProps, ViewerState } from "./interface";
+import { ParagraphesWords, ViewerProps, ViewerState } from "./interface";
 import { withRouter } from "react-router-dom";
 import BookUtil from "../../utils/fileUtils/bookUtil";
 import PopupMenu from "../../components/popups/popupMenu";
@@ -20,14 +20,14 @@ import { renderHighlighters } from "../../utils/serviceUtils/noteUtil";
 import Note from "../../models/Note";
 import PageWidget from "../../containers/pageWidget";
 import { scrollContents } from "../../utils/commonUtil";
-
+import { removeTagsFromParagraph, selectLines } from "../../utils/serviceUtils/selectLinesUtiles";
 
 declare var window: any;
 let lock = false; //prevent from clicking too fasts
 
 class Viewer extends React.Component<ViewerProps, ViewerState> {
   lock: boolean;
-  observer: MutationObserver | null = null;
+  isComponentMounted: boolean = false; // pour suivre l'état du montage du composant.
   constructor(props: ViewerProps) {
     super(props);
     this.state = {
@@ -52,7 +52,13 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
       pageWidth: "",
       chapter: "",
       rendition: null,
-      isColorChanged: StorageUtil.getReaderConfig("changeColorsTriggered") === "true"
+      isColorChanged: StorageUtil.getReaderConfig("changeColorsTriggered") === "true",
+      words: [],
+      currentWordIndex: 0,
+      rateStored: StorageUtil.getReaderConfig("readingRate"),
+      langStored: StorageUtil.getReaderConfig("langSpeaking"),
+      paragraphesWords: [],
+      highlightText: 0
     };
     this.lock = false;
 
@@ -80,10 +86,10 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
     window.addEventListener("removeStyles", () => {
       this.disableBackgroundColor();
     })
+
     const changeColorsTriggered = StorageUtil.getReaderConfig("changeColorsTriggered") === "true";
 
     this.handleChangeStyle(changeColorsTriggered);
-
 
   }
 
@@ -94,6 +100,22 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
   }
 
 
+  componentDidUpdate(prevProps) {
+    const { rendition } = this.state;
+    const { isBookReading } = this.props;
+
+    if ((prevProps.isBookReading !== isBookReading)) {
+      if (isBookReading) {
+        if (rendition) {
+          this.handleBookVoice();
+        } else {
+          console.error("rendition has not initialized")
+        }
+      } else {
+        this.stopBookReading();
+      }
+    }
+  }
   handleChangeStyle = async (changeColorsTriggered: boolean) => {
     if (changeColorsTriggered) {
       await this.handleRenderBookWithLinesColor();
@@ -215,7 +237,6 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
 
           await this.handleRest(rendition);
           this.props.handleReadingState(true);
-
           RecentBooks.setRecent(this.props.currentBook.key);
           document.title = name + " - Koodo Reader";
         }
@@ -266,100 +287,178 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
   };
 
 
+  handleBookVoice = async () => {
+    if (lock) return;
+    const { key, path, format, name } = this.props.currentBook;
+
+    try {
+      let isCacheExsit = await BookUtil.isBookExist("cache-" + key, path);
+      BookUtil.fetchBook(isCacheExsit ? "cache-" + key : key, true, path).then(
+        async (result: any) => {
+          if (!result) {
+            toast.error(this.props.t("Book not exsit"));
+            return;
+          }
+
+          let rendition = BookUtil.getRendtion(
+            result,
+            isCacheExsit ? "CACHE" : format,
+            this.state.readerMode,
+            this.props.currentBook.charset,
+            StorageUtil.getReaderConfig("isSliding") === "yes" ? "sliding" : ""
+          );
+          await rendition.renderTo(
+            document.getElementsByClassName("html-viewer-page")[0]
+          );
+
+          rendition.on("rendered", () => {
+            if (this.props.isBookReading) {
+              this.handleSpeakText(rendition); // Ne lit que si la lecture est active
+            }
 
 
-  /**
-   * On sélectionne les lignes de l'élément p
-   *
-   * @param p : élément à traiter
-   */
-  selectLines(p) {
-    const lines: string[] = [];
-    let range = new Range();
-    const textnodes = this.extractTextNode(p);
-    range.setStart(textnodes[0], 0); // démarre au début de p
-    do {
-      range = this.nextLineRange(range, textnodes); // sélectionne une ligne après l'autre
-      if (range.toString().length > 0) {
-        lines.push(range.toString());
-      }
-    } while (range.toString().length > 0); // jusqu'à ce qu'il n'y ait plus rien
-    return lines;
-  }
 
-  /**
-   * On part de la sélection précédente pour sélectionner la prochaine ligne de texte
-   * 
-   * @param range : sélection précédente
-   * @return nouvelle sélection ou null si on est arrivé en bout de paragraphe
-   */
-  nextLineRange(range, textnodes) {
-    const newRange = document.createRange();
-    //Le début de ce nouveau Range est défini à la fin du Range existant passé en paramètre
-    newRange.setStart(range.endContainer, range.endOffset);
+          })
 
-    while (!this.hasNewLine(newRange.getClientRects())) {
-      //Si la fin du Range atteint la fin du contenu du nœud actuel 
-      if (newRange.endOffset >= newRange.endContainer.textContent!.length) {
-        // on passe a la noeud suivant 
-        const index = textnodes.indexOf(newRange.endContainer);
-        if (index + 1 < textnodes.length) {
-          newRange.setEnd(textnodes[index + 1], 0); // next child node
-        } else {
-          //Si c’est le dernier nœud, on définit la fin du Range à la fin du contenu du nœud actuel et on retourne le Range
-          newRange.setEnd(newRange.endContainer, newRange.endContainer.textContent!.length); // end of paragraph
-          return newRange;
+          await this.handleRest(rendition);
+          this.props.handleReadingState(true);
+          RecentBooks.setRecent(this.props.currentBook.key);
+          document.title = name + " - Koodo Reader";
         }
-      } else {
-        newRange.setEnd(newRange.endContainer, newRange.endOffset + 1); // next character
+      );
+    } catch (error) {
+      console.error("Erreur lors du traitement du livre :", error);
+    }
+  };
+
+
+  handleSpeakText = (rendition) => {
+    if (!this.props.isBookReading || !rendition) return;
+
+    const iframe = rendition.element?.querySelector("iframe");
+    if (!iframe) {
+      console.error("Impossible de trouver l'iframe dans rendition.element");
+      return;
+    }
+
+    const doc = iframe.contentDocument || iframe.contentWindow?.document;
+    if (!doc) {
+      console.error("Impossible d'accéder au contenu de l'iframe");
+      return;
+    }
+    const paragraphs = doc.querySelectorAll("p.kookit-text");
+
+    let allParagrapheWords: ParagraphesWords[] = [];
+    allParagrapheWords = this.getWordsEachParagraph(paragraphs)
+    //  calling readWord in setState to perform an action immediately after setting state of words
+    this.setState({ paragraphesWords: allParagrapheWords, currentWordIndex: 0 }, this.readWord);
+
+  };
+
+  // Méthode pour arrêter la lecture
+  stopBookReading = () => {
+    speechSynthesis.cancel();
+  };
+
+  getWordsEachParagraph(paragraphes: Element[]): ParagraphesWords[] {
+    let allParagrapheWords: ParagraphesWords[] = [];
+    paragraphes.forEach((p) => {
+
+      const text = p.textContent || "";
+      const words = text.split(/\s+/).filter((word) => word.trim() !== "");
+
+      words.forEach((word, index) => {
+        const pWords: ParagraphesWords = {
+          paragraph: p,
+          wordParagraph: word,
+          indexWord: index,
+        };
+
+        allParagrapheWords.push(pWords);
+      });
+    })
+    return allParagrapheWords;
+  }
+
+
+  readWord = () => {
+    const { paragraphesWords, currentWordIndex } = this.state;
+    // Vérifie si on a atteint la fin des paragraphes/mots
+    if (!paragraphesWords || currentWordIndex >= paragraphesWords.length) {
+      this.stopBookReading(); // Arrête la lecture si tous les mots ont été lus
+      return;
+    }
+
+    // Surligne le mot actuel
+    this.highlightWord(currentWordIndex);
+    // Lit le mot actuel, puis appelle la méthode pour continuer
+    this.speak(paragraphesWords[currentWordIndex], () => {
+      this.setState(
+        (prevState) => ({ currentWordIndex: prevState.currentWordIndex + 1 }),
+        () => {
+          this.readWord(); // Passe au mot suivant
+        }
+      );
+    });
+  };
+
+
+
+  speak = (paragraphesWords: ParagraphesWords, onWordEnd: () => void) => {
+
+    const { rateStored } = this.state;
+    const { readingRate } = this.props;
+
+    // Vérifie si le synthétiseur vocal est actif et stoppe l'exécution en cours
+    if (speechSynthesis.speaking) {
+      speechSynthesis.cancel();
+    }
+
+    const utterance = new SpeechSynthesisUtterance(paragraphesWords.wordParagraph);
+    utterance.lang = "fr-FR";
+    utterance.rate = readingRate || rateStored;
+
+    // Appelle une fonction (callback) lorsque le mot est lu
+    utterance.onend = () => {
+      if (onWordEnd) {
+        onWordEnd(); // Notifie la fin de la lecture
       }
-    }
+    };
 
-    //reculant d’un caractère pour rester sur la même ligne.
-    if (newRange.endOffset > 0) {
-      newRange.setEnd(newRange.endContainer, newRange.endOffset - 1); // move back to the line
-    }
 
-    return newRange;
-  }
-  removeTagsFromParagraph(paragraph) {
-    // Remplace le contenu HTML du paragraphe par son équivalent texte brut
-    paragraph.innerHTML = paragraph.innerText || paragraph.textContent || "";
-  }
+    speechSynthesis.speak(utterance);
+  };
 
-  /**
-   * On extrait les noeuds de type TEXT_NODE
-   *
-   * @param p : élément à partir duquel on souhaite extraire les noeuds
-   */
-  extractTextNode(p) {
-    this.removeTagsFromParagraph(p)
-    const nodes: Node[] = [];
-    const walker = document.createTreeWalker(p, NodeFilter.SHOW_TEXT);
 
-    let currentNode = walker.nextNode();
-    while (currentNode) {
-      nodes.push(currentNode); // Ajoute chaque nœud texte à la liste
-      currentNode = walker.nextNode();
-    }
+  highlightWord = (globalIndex: number) => {
+    const doc = getIframeDoc();
+    if (!doc) return;
+    const paragraphs = doc.querySelectorAll("p.kookit-text");
 
-    return nodes;
-  }
+    let wordCounter = 0; // Compteur global des mots
+    paragraphs.forEach((p) => {
+      const text = p.textContent || "";
+      const words = text.split(/\s+/).filter((word) => word.trim() !== "");
 
-  /**
-   * On a plusieurs lignes lorsqu'on a un rectangle dont le y est différent des autres rectangles
-   *
-   * @param rects : les rectangles issues de la sélection (range)
-   */
-  hasNewLine(rects) {
-    for (let i = 0; i < rects.length; i++) {
-      if (rects[i].y !== rects[0].y) {
-        return true;
+      // Réinitialise le contenu du paragraphe sans surbrillance
+      const updatedWords = words.map((w) => `<span>${w}</span>`);
+
+      // Vérifie si le mot courant appartient à ce paragraphe
+      const start = wordCounter;
+      const end = wordCounter + words.length - 1;
+
+      if (globalIndex >= start && globalIndex <= end) {
+        // Calcule l'index relatif pour le paragraphe courant
+        const relativeIndex = globalIndex - start;
+        updatedWords[relativeIndex] = `<span style="background-color: yellow;">${words[relativeIndex]}</span>`;
       }
-    }
-    return false;
-  }
 
+      // Met à jour le contenu HTML du paragraphe
+      p.innerHTML = updatedWords.join(" ");
+      wordCounter += words.length;
+    });
+
+  }
 
   disableBackgroundColor() {
 
@@ -394,13 +493,13 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
       const randomColors = StorageUtil.getReaderConfig("baseColors") || "[]";
       const colors = JSON.parse(randomColors);
       let colorIndex = 0;
-      this.removeTagsFromParagraph(paragraphs)
+      removeTagsFromParagraph(paragraphs)
       paragraphs.forEach((p) => {
 
         let coloredHTML = "";
 
         // Trouver les lignes correspondant à ce paragraphe
-        const lines = this.selectLines(p);
+        const lines = selectLines(p);
         lines.forEach((line) => {
 
           const color = colors[colorIndex % colors.length];
@@ -433,13 +532,13 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
       const randomColors = StorageUtil.getReaderConfig("baseColors") || "[]";
       const colors = JSON.parse(randomColors);
       let colorIndex = 0;
-      this.removeTagsFromParagraph(paragraphs)
+      removeTagsFromParagraph(paragraphs)
 
       paragraphs.forEach((p) => {
         let coloredHTML = "";
 
         // Trouver les lignes correspondant à ce paragraphe
-        const lines = this.selectLines(p);
+        const lines = selectLines(p);
         lines.forEach((line) => {
           const color = colors[colorIndex % colors.length];
           colorIndex++;
@@ -482,7 +581,6 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
       console.error("Impossible d'accéder au contenu de l'iframe");
       return;
     }
-
     try {
       const highlightConfig = StorageUtil.getReaderConfig("highlightLines");
       const lineHighlight = highlightConfig ? JSON.parse(highlightConfig) : null;
@@ -521,7 +619,6 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
     StyleUtil.addDefaultCss();
     tsTransform();
     binicReadingProcess();
-    // rendition.setStyle(StyleUtil.getCustomCss());
     let bookLocation: {
       text: string;
       count: string;
@@ -727,6 +824,7 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
           }
         ></div>
         <PageWidget />
+
         {StorageUtil.getReaderConfig("isHideBackground") === "yes" ? null : this
           .props.currentBook.key ? (
           <Background />

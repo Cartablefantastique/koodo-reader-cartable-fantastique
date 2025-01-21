@@ -4,6 +4,9 @@ const initState = {
   isOpenAddDialog: false,
   isOpenActionDialog: false,
   isReading: false,
+  isBookReading: false,
+  readingRate: 0,
+  langSpeaking: "",
   dragItem: "",
   currentBook: {},
   renderBookFunc: () => { },
@@ -58,6 +61,26 @@ export function book(
         ...state,
         isReading: action.payload,
       };
+    case "STOP_BOOK_READING":
+      return {
+        ...state,
+        isBookReading: action.payload
+      }
+    case "START_BOOK_READING":
+      return {
+        ...state,
+        isBookReading: action.payload
+      }
+    case "HANDLE_CHANGE_READING_RATE":
+      return {
+        ...state,
+        readingRate: action.payload
+      }
+    case "HANDLE_CHANGE_LANGUAGE_SPEAKING":
+      return {
+        ...state,
+        langSpeaking: action.payload
+      }
     case "HANDLE_READING_BOOK":
       return {
         ...state,

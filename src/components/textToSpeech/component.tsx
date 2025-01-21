@@ -178,28 +178,6 @@ class TextToSpeech extends React.Component<
   }
 
   async handleSystemRead(index) {
-    let currentText = this.nodeList[index]; // Texte actuel
-    //let style = "background: #f3a6a68c";
-    //this.props.htmlBook.rendition.highlightNode(currentText, style);
-
-    let e = document.getElementById("page-area");
-    if (e) {
-      let iframe = e.getElementsByTagName("iframe")[0];
-      let iframeDocument = iframe.contentDocument;
-
-      if (iframeDocument) {
-        // 1. Rechercher l'élément HTML contenant `currentText`
-        let elements = iframeDocument.body.querySelectorAll("*"); // Parcourir tous les éléments
-        let matchingElement: HTMLElement | null = null;
-
-        elements.forEach((element) => {
-          if (element.textContent?.includes(currentText)) {
-            matchingElement = element as HTMLElement;
-          }
-        });
-      }
-    }
-
     let res = await this.handleSystemSpeech(
       index,
       parseInt(StorageUtil.getReaderConfig("voiceIndex")) || 0,
@@ -362,6 +340,7 @@ class TextToSpeech extends React.Component<
                     className="lang-setting-option"
                     key={item}
                     defaultValue={StorageUtil.getReaderConfig("voiceSpeed") || "1"}
+
                   >
                     {item}
                   </option>

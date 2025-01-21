@@ -1,6 +1,6 @@
 import React from "react";
 import RecentBooks from "../../utils/readUtils/recordRecent";
-import { ViewerProps, ViewerState } from "./interface";
+import { ParagraphesWords, ViewerProps, ViewerState } from "./interface";
 import { withRouter } from "react-router-dom";
 import BookUtil from "../../utils/fileUtils/bookUtil";
 import PopupMenu from "../../components/popups/popupMenu";
@@ -20,6 +20,7 @@ import { renderHighlighters } from "../../utils/serviceUtils/noteUtil";
 import Note from "../../models/Note";
 import PageWidget from "../../containers/pageWidget";
 import { scrollContents } from "../../utils/commonUtil";
+import { removeTagsFromParagraph, selectLines } from "../../utils/serviceUtils/selectLinesUtiles";
 
 declare var window: any;
 let lock = false; //prevent from clicking too fasts
@@ -53,10 +54,11 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
       rendition: null,
       isColorChanged: StorageUtil.getReaderConfig("changeColorsTriggered") === "true",
       words: [],
-      currentWordIndex: null,
+      currentWordIndex: 0,
       rateStored: StorageUtil.getReaderConfig("readingRate"),
-      langStored: StorageUtil.getReaderConfig("langSpeaking")
-
+      langStored: StorageUtil.getReaderConfig("langSpeaking"),
+      paragraphesWords: [],
+      highlightText: 0
     };
     this.lock = false;
 
@@ -92,18 +94,15 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
   }
 
   componentWillUnmount() {
-
     //écouteur d’événement est nettoyé lorsque le composant se démonte
     window.removeEventListener("localStorageChange", this.handleLocalStorageChange);
     window.removeEventListener("removeStyles", this.disableBackgroundColor)
-
-
   }
 
 
   componentDidUpdate(prevProps) {
     const { rendition } = this.state;
-    const { isBookReading, } = this.props;
+    const { isBookReading } = this.props;
 
     if ((prevProps.isBookReading !== isBookReading)) {
       if (isBookReading) {
@@ -116,6 +115,8 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
         this.stopBookReading();
       }
     }
+
+
   }
 
 
@@ -352,21 +353,11 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
       return;
     }
     const paragraphs = doc.querySelectorAll("p.kookit-text");
-    this.removeTagsFromParagraph(paragraphs);
 
-    // Récupérer tous les mots de tous les paragraphes
-    let allWords: string[] = [];
-    paragraphs.forEach((p, index) => {
-
-      console.log("each p", p, "index of p", index)
-      const lines = this.selectLines(p);
-
-      lines.forEach((line) => {
-        allWords = [...allWords, ...line.split(/\s+/).filter((e) => e.trim() !== "")];
-      });
-    });
-
-    this.setState({ words: allWords, currentWordIndex: 0 }, this.readWord);
+    let allParagrapheWords: ParagraphesWords[] = [];
+    allParagrapheWords = this.getWordsEachParagraph(paragraphs)
+    //  calling readWord in setState to perform an action immediately after setting state of words
+    this.setState({ paragraphesWords: allParagrapheWords, currentWordIndex: 0 }, this.readWord);
 
   };
 
@@ -375,61 +366,82 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
     speechSynthesis.cancel();
   };
 
-  // Nouvelle méthode pour synchroniser la lecture avec le statut
-  syncPlaybackWithStatus = () => {
-    const { isBookReading } = this.props;
+  getWordsEachParagraph(paragraphes: Element[]): ParagraphesWords[] {
+    let allParagrapheWords: ParagraphesWords[] = [];
+    paragraphes.forEach((p) => {
 
-    if (isBookReading && speechSynthesis.speaking) {
-      // Reprendre la lecture si elle est en pause
-      speechSynthesis.resume();
+      const text = p.textContent || "";
+      const words = text.split(/\s+/).filter((word) => word.trim() !== "");
 
-    } else if (!isBookReading && speechSynthesis.speaking) {
-      // Mettre en pause la lecture
-      speechSynthesis.pause();
+      words.forEach((word, index) => {
+        const pWords: ParagraphesWords = {
+          paragraph: p,
+          wordParagraph: word,
+          indexWord: index,
+        };
 
-    }
-    // Si le myPauseProperty est à true mais qu'aucune lecture n'est en cours, démarre
-    else if (isBookReading && !speechSynthesis.speaking) {
-      this.readWord();
-    }
-  };
+        allParagrapheWords.push(pWords);
+      });
+    })
+    return allParagrapheWords;
+  }
+
 
   readWord = () => {
-
-    const { words, currentWordIndex, rateStored } = this.state;
-    const { readingRate } = this.props;
-
-    if (currentWordIndex === null || currentWordIndex >= words.length) {
-      this.stopBookReading(); // Arrête si tous les mots sont lus
+    const { paragraphesWords, currentWordIndex } = this.state;
+    // Vérifie si on a atteint la fin des paragraphes/mots
+    if (!paragraphesWords || currentWordIndex >= paragraphesWords.length) {
+      this.stopBookReading(); // Arrête la lecture si tous les mots ont été lus
       return;
     }
 
-    // Lire le mot courant
-    const utterance = new SpeechSynthesisUtterance(words[currentWordIndex]);
-    utterance.lang = "fr-FR"
+    // Surligne le mot actuel
+    this.highlightWord(currentWordIndex);
+    // Lit le mot actuel, puis appelle la méthode pour continuer
+    this.speak(paragraphesWords[currentWordIndex], () => {
+      this.setState(
+        (prevState) => ({ currentWordIndex: prevState.currentWordIndex + 1 }),
+        () => {
+          this.readWord(); // Passe au mot suivant
+        }
+      );
+    });
+  };
+
+
+
+  speak = (paragraphesWords: ParagraphesWords, onWordEnd: () => void) => {
+
+    const { rateStored } = this.state;
+    const { readingRate } = this.props;
+
+    // Vérifie si le synthétiseur vocal est actif et stoppe l'exécution en cours
+    if (speechSynthesis.speaking) {
+      speechSynthesis.cancel();
+    }
+
+    const utterance = new SpeechSynthesisUtterance(paragraphesWords.wordParagraph);
+    utterance.lang = "fr-FR";
     utterance.rate = readingRate || rateStored;
 
+    // Appelle une fonction (callback) lorsque le mot est lu
     utterance.onend = () => {
-      // Passe au mot suivant après la lecture
-      this.setState(
-        (prevState) => ({ currentWordIndex: prevState.currentWordIndex! + 1 }),
-        this.readWord
-      );
-
+      if (onWordEnd) {
+        onWordEnd(); // Notifie la fin de la lecture
+      }
     };
-    speechSynthesis.speak(utterance);
-    this.highlightWord(currentWordIndex);
 
+
+    speechSynthesis.speak(utterance);
   };
 
 
   highlightWord = (globalIndex: number) => {
     const doc = getIframeDoc();
     if (!doc) return;
-
     const paragraphs = doc.querySelectorAll("p.kookit-text");
-    let wordCounter = 0; // Compteur global des mots
 
+    let wordCounter = 0; // Compteur global des mots
     paragraphs.forEach((p) => {
       const text = p.textContent || "";
       const words = text.split(/\s+/).filter((word) => word.trim() !== "");
@@ -453,101 +465,6 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
     });
 
   }
-
-
-
-  /**
-   * On sélectionne les lignes de l'élément p
-   *
-   * @param p : élément à traiter
-   */
-  selectLines(p) {
-    const lines: string[] = [];
-    let range = new Range();
-    const textnodes = this.extractTextNode(p);
-    range.setStart(textnodes[0], 0); // démarre au début de p
-    do {
-      range = this.nextLineRange(range, textnodes); // sélectionne une ligne après l'autre
-      if (range.toString().length > 0) {
-        lines.push(range.toString());
-      }
-    } while (range.toString().length > 0); // jusqu'à ce qu'il n'y ait plus rien
-    return lines;
-  }
-
-  /**
-   * On part de la sélection précédente pour sélectionner la prochaine ligne de texte
-   * 
-   * @param range : sélection précédente
-   * @return nouvelle sélection ou null si on est arrivé en bout de paragraphe
-   */
-  nextLineRange(range, textnodes) {
-    const newRange = document.createRange();
-    //Le début de ce nouveau Range est défini à la fin du Range existant passé en paramètre
-    newRange.setStart(range.endContainer, range.endOffset);
-
-    while (!this.hasNewLine(newRange.getClientRects())) {
-      //Si la fin du Range atteint la fin du contenu du nœud actuel 
-      if (newRange.endOffset >= newRange.endContainer.textContent!.length) {
-        // on passe a la noeud suivant 
-        const index = textnodes.indexOf(newRange.endContainer);
-        if (index + 1 < textnodes.length) {
-          newRange.setEnd(textnodes[index + 1], 0); // next child node
-        } else {
-          //Si c’est le dernier nœud, on définit la fin du Range à la fin du contenu du nœud actuel et on retourne le Range
-          newRange.setEnd(newRange.endContainer, newRange.endContainer.textContent!.length); // end of paragraph
-          return newRange;
-        }
-      } else {
-        newRange.setEnd(newRange.endContainer, newRange.endOffset + 1); // next character
-      }
-    }
-
-    //reculant d’un caractère pour rester sur la même ligne.
-    if (newRange.endOffset > 0) {
-      newRange.setEnd(newRange.endContainer, newRange.endOffset - 1); // move back to the line
-    }
-
-    return newRange;
-  }
-  removeTagsFromParagraph(paragraph) {
-    // Remplace le contenu HTML du paragraphe par son équivalent texte brut
-    paragraph.innerHTML = paragraph.innerText || paragraph.textContent || "";
-  }
-
-  /**
-   * On extrait les noeuds de type TEXT_NODE
-   *
-   * @param p : élément à partir duquel on souhaite extraire les noeuds
-   */
-  extractTextNode(p) {
-    this.removeTagsFromParagraph(p)
-    const nodes: Node[] = [];
-    const walker = document.createTreeWalker(p, NodeFilter.SHOW_TEXT);
-
-    let currentNode = walker.nextNode();
-    while (currentNode) {
-      nodes.push(currentNode); // Ajoute chaque nœud texte à la liste
-      currentNode = walker.nextNode();
-    }
-
-    return nodes;
-  }
-
-  /**
-   * On a plusieurs lignes lorsqu'on a un rectangle dont le y est différent des autres rectangles
-   *
-   * @param rects : les rectangles issues de la sélection (range)
-   */
-  hasNewLine(rects) {
-    for (let i = 0; i < rects.length; i++) {
-      if (rects[i].y !== rects[0].y) {
-        return true;
-      }
-    }
-    return false;
-  }
-
 
   disableBackgroundColor() {
 
@@ -582,13 +499,13 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
       const randomColors = StorageUtil.getReaderConfig("baseColors") || "[]";
       const colors = JSON.parse(randomColors);
       let colorIndex = 0;
-      this.removeTagsFromParagraph(paragraphs)
+      removeTagsFromParagraph(paragraphs)
       paragraphs.forEach((p) => {
 
         let coloredHTML = "";
 
         // Trouver les lignes correspondant à ce paragraphe
-        const lines = this.selectLines(p);
+        const lines = selectLines(p);
         lines.forEach((line) => {
 
           const color = colors[colorIndex % colors.length];
@@ -621,17 +538,14 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
       const randomColors = StorageUtil.getReaderConfig("baseColors") || "[]";
       const colors = JSON.parse(randomColors);
       let colorIndex = 0;
-      this.removeTagsFromParagraph(paragraphs)
+      removeTagsFromParagraph(paragraphs)
 
       paragraphs.forEach((p) => {
         let coloredHTML = "";
 
         // Trouver les lignes correspondant à ce paragraphe
-        const lines = this.selectLines(p);
+        const lines = selectLines(p);
         lines.forEach((line) => {
-
-
-
           const color = colors[colorIndex % colors.length];
           colorIndex++;
 

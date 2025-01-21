@@ -198,7 +198,7 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
 
     return (
       <div className="background-color-setting">
-        <div className="background-color-text">
+        <div className="general-setting-title">
           <Trans>Background color</Trans>
         </div>
         <ul className="background-color-list">
@@ -227,7 +227,7 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
             }}
           />
         )}
-        <div className="background-color-text">
+        <div className="general-setting-title">
           <Trans>Text color</Trans>
         </div>
         <ul className="background-color-list">
@@ -257,7 +257,7 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
           />
         )}
 
-        <div className="background-color-line">
+        <div className="general-setting-title">
           <Trans>Colorier Les Lignes</Trans>
         </div>
         <div className="grp-btn-change-color-line">
@@ -279,7 +279,7 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
 
         </div>
 
-        <div className="background-color-line">
+        <div className="general-setting-title">
           <Trans>Surligner Les Lignes</Trans>
         </div>
         <div className="grp-btn-highlight-line">
@@ -301,7 +301,7 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
 
         </div>
 
-        <div className="background-color-line">
+        <div className="general-setting-title">
           <Trans>Lire le texte</Trans>
         </div>
         <div className="btn-control-reading">
@@ -310,7 +310,9 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
             disabled={this.props.isBookReading}
             className="btn-control-reader"
           >
-            <img src={lecture} alt="Lecture du texte" />
+            <img
+              className="cursor-pointer icons-option"
+              src={lecture} alt="Lecture du texte" />
           </button>
 
           <button
@@ -318,7 +320,9 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
             disabled={!this.props.isBookReading}
             className="btn-control-reader"
           >
-            <img src={stop} alt="Arrête le lecture" />
+            <img
+              className="cursor-pointer icons-option"
+              src={stop} alt="Arrête le lecture" />
           </button>
 
         </div>

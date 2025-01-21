@@ -57,13 +57,13 @@
   font-size: 18px;
   opacity: 0.7;
 }
-.btn-control-reading,
+
 .grp-btn-highlight-line,
 .grp-btn-change-color-line {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  gap: 1rem;
+  gap: 1.2rem;
   .btn--reset-style,
   .btn-style {
     background-color: #ffffff;
@@ -74,15 +74,27 @@
     font-size: xxx-large;
   }
 }
-.btn-control-reader {
-  background-color: white;
-  border: none;
-  color: white;
-  padding: 10px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
+
+.btn-control-reading {
+  .btn-control-reader {
+    background-color: white;
+    border: none;
+    color: white;
+    width: 4.5rem;
+    padding-left: 5px;
+    padding-right: 5px;
+    .icons-option {
+      object-fit: "contain";
+      padding-left: 5px;
+    }
+  }
+}
+
+.general-setting-title {
+  font-family: Arial, sans-serif;
   font-size: 16px;
-  width: 5rem;
-  height: 5rem;
+  color: #333;
+  font-weight: 600;
+  margin: 10px 0;
+  padding: 5px;
 }

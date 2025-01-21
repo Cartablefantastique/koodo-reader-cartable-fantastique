@@ -59,10 +59,11 @@ export interface ViewerState {
   rendition: any;
   isColorChanged: boolean;
   words: string[],
-  currentWordIndex: null | number,
+  currentWordIndex: number,
   rateStored: number,
   langStored: string,
-
+  paragraphesWords: ParagraphesWords[],
+  highlightText: number,
 
 }
 
@@ -72,3 +73,8 @@ export interface LineEnding {
   text: string;
 }
 
+export interface ParagraphesWords {
+  paragraph: Element,
+  wordParagraph: string,
+  indexWord: number,
+}

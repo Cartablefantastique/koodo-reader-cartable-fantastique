@@ -4,17 +4,6 @@ import { Trans } from "react-i18next";
 import { iconChoiceList, IconChoiceListProps, IconChoiceListState } from "./interface";
 import StorageUtil from "../../../utils/serviceUtils/storageUtil";
 import BookUtil from "../../../utils/fileUtils/bookUtil";
-import iconArial from '../../../assets/icons/arial.png';
-import iconVerdana from '../../../assets/icons/verdana.png';
-import iconLeftAlign from '../../../assets/icons/aligne_gauche.png';
-import iconRightAlign from '../../../assets/icons/aligne_droite.png';
-import iconAddInterval from '../../../assets/icons/interligne_augmenter.png';
-import iconReduceInterval from '../../../assets/icons/interligne_reduire.png';
-import iconAddFontSize from '../../../assets/icons/agrandir_police.png';
-import iconReduceFontSize from '../../../assets/icons/reduire_police.png';
-import iconAdd from '../../../assets/icons/augmenter.png';
-import iconReduce from '../../../assets/icons/reduire.png';
-import iconDefault from '../../../assets/icons/style_CF.jpg';
 
 
 class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceListState> {

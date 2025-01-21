@@ -55,8 +55,7 @@ class Viewer extends React.Component<ViewerProps, ViewerState> {
       isColorChanged: StorageUtil.getReaderConfig("changeColorsTriggered") === "true",
       words: [],
       currentWordIndex: 0,
-      rateStored: StorageUtil.getReaderConfig("readingRate"),
-      langStored: StorageUtil.getReaderConfig("langSpeaking"),
+      rateStored: StorageUtil.getReaderConfig("readingRate") || 2,
       paragraphesWords: [],
       highlightText: 0
     };

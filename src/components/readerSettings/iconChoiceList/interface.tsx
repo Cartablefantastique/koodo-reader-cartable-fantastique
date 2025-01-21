@@ -8,7 +8,7 @@ import iconAddFontSize from '../../../assets/icons/agrandir_police.png';
 import iconReduceFontSize from '../../../assets/icons/reduire_police.png';
 import iconAdd from '../../../assets/icons/augmenter.png';
 import iconReduce from '../../../assets/icons/reduire.png';
-
+import iconDefault from '../../../assets/icons/style_CF.jpg';
 
 export interface IconChoiceListProps {
   t: (title: string) => string;
@@ -34,6 +34,17 @@ export interface IconChoiceListState {
 export const iconChoiceList = [
   {
     id: 1,
+    title: "Reset Default",
+    value: "resetDefault",
+    icons: [{
+      value: "resetDefault",
+      src: iconDefault,
+      alt: "Paramètres par défaut"
+    }]
+  },
+
+  {
+    id: 2,
     title: "Font size",
     value: "fontSize",
     icons: [
@@ -50,7 +61,7 @@ export const iconChoiceList = [
     ]
   },
   {
-    id: 2,
+    id: 3,
     title: "Font family",
     value: "fontFamily",
     icons: [
@@ -67,7 +78,7 @@ export const iconChoiceList = [
     ]
   },
   {
-    id: 3,
+    id: 4,
     title: "Line height",
     value: "lineHeight",
     icons: [
@@ -84,7 +95,7 @@ export const iconChoiceList = [
     ]
   },
   {
-    id: 4,
+    id: 5,
     title: "Text alignment",
     value: "textAlign",
     icons: [
@@ -101,7 +112,7 @@ export const iconChoiceList = [
     ]
   },
   {
-    id: 5,
+    id: 6,
     title: "Word spacing",
     value: "wordSpacing",
     icons: [
@@ -118,7 +129,7 @@ export const iconChoiceList = [
     ]
   },
   {
-    id: 6,
+    id: 7,
     title: "Letter spacing",
     value: "letterSpacing",
     icons: [
@@ -135,7 +146,7 @@ export const iconChoiceList = [
     ]
   },
   {
-    id: 7,
+    id: 8,
     title: "Margin",
     value: "margin",
     icons: [
@@ -152,7 +163,7 @@ export const iconChoiceList = [
     ]
   },
   {
-    id: 8,
+    id: 9,
     title: "Page width",
     value: "scale",
     icons: [
@@ -170,7 +181,7 @@ export const iconChoiceList = [
   },
 
   {
-    id: 9,
+    id: 10,
     title: "Vitesse de Lecture",
     value: "readingRate",
     icons: [

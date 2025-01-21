@@ -15,7 +15,7 @@ class StorageUtil {
     readerConfig[key] = value;
     localStorage.setItem("readerConfig", JSON.stringify(readerConfig));
   }
-  
+
   static resetReaderConfig(key: string) {
     let readerConfig = JSON.parse(localStorage.getItem("readerConfig")!) || {};
     readerConfig[key] = null;
@@ -26,7 +26,7 @@ class StorageUtil {
     // TODO ADIB : Comment reset les couleurs ?
     // this.setReaderConfig("highlightLines", "resetStyles")
     // this.setReaderConfig("highlightLines", "resetStyles")
-    
+
     this.setReaderConfig("readerMode", "single");
     this.setReaderConfigNumber("fontSize", 15)
     this.setReaderConfig("fontFamily", "Arial")
@@ -36,8 +36,8 @@ class StorageUtil {
     this.setReaderConfigNumber("letterSpacing", 0)
     this.setReaderConfigNumber("margin", 0)
     this.setReaderConfigNumber("scale", 1.5)
+    this.setReaderConfigNumber("readingRate", 1)
   }
-
 }
 
 export default StorageUtil;

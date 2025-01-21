@@ -206,7 +206,7 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
         return (
           <p className="general-setting-title">
             <Trans> {title} </Trans>  :
-            <span className="itemValue">{StorageUtil.getReaderConfig("readingRate")}</span>
+            <span className="itemValue">{StorageUtil.getReaderConfig("readingRate") || 1}</span>
           </p>
         )
       }

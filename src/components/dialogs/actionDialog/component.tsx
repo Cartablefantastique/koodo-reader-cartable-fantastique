@@ -7,7 +7,6 @@ import AddTrash from "../../../utils/readUtils/addTrash";
 import toast from "react-hot-toast";
 import AddFavorite from "../../../utils/readUtils/addFavorite";
 import MoreAction from "../moreAction";
-declare var window: any;
 class ActionDialog extends React.Component<
   ActionDialogProps,
   ActionDialogState
@@ -151,17 +150,6 @@ class ActionDialog extends React.Component<
             <div
               className="action-dialog-add"
               onClick={() => {
-                this.handleAddShelf();
-              }}
-            >
-              <span className="icon-bookshelf-line view-icon"></span>
-              <p className="action-name">
-                <Trans>Add to shelf</Trans>
-              </p>
-            </div>
-            <div
-              className="action-dialog-add"
-              onClick={() => {
                 this.handleMultiSelect();
               }}
             >
@@ -184,17 +172,6 @@ class ActionDialog extends React.Component<
             <div
               className="action-dialog-edit"
               onClick={() => {
-                this.handleEditBook();
-              }}
-            >
-              <span className="icon-edit-line view-icon"></span>
-              <p className="action-name">
-                <Trans>Edit</Trans>
-              </p>
-            </div>
-            <div
-              className="action-dialog-edit"
-              onClick={() => {
                 this.handleDetailBook();
               }}
             >
@@ -206,43 +183,7 @@ class ActionDialog extends React.Component<
                 <Trans>Details</Trans>
               </p>
             </div>
-            <div
-              className="action-dialog-edit"
-              onMouseEnter={(event) => {
-                this.setState({ isShowExport: true });
-                const e = event || window.event;
-                let x = e.clientX;
-                if (x > document.body.clientWidth - 300) {
-                  this.setState({ isExceed: true });
-                } else {
-                  this.setState({ isExceed: false });
-                }
-              }}
-              onMouseLeave={(event) => {
-                this.setState({ isShowExport: false });
-                event.stopPropagation();
-              }}
-              style={{ display: "flex", justifyContent: "space-between" }}
-            >
-              <p className="action-name" style={{ marginLeft: "0px" }}>
-                <span
-                  className="icon-more view-icon"
-                  style={{
-                    display: "inline-block",
-                    marginRight: "12px",
-                    marginLeft: "3px",
-                    transform: "rotate(90deg)",
-                    fontSize: "12px",
-                  }}
-                ></span>
-                <Trans>More actions</Trans>
-              </p>
 
-              <span
-                className="icon-dropdown icon-export-all"
-                style={{ left: "95px" }}
-              ></span>
-            </div>
           </div>
         </div>
         <MoreAction {...moreActionProps} />

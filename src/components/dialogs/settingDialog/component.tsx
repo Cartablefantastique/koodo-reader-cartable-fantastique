@@ -7,8 +7,6 @@ import packageInfo from "../../../../package.json";
 import StorageUtil from "../../../utils/serviceUtils/storageUtil";
 import { changePath } from "../../../utils/syncUtils/common";
 import { isElectron } from "react-device-detect";
-// import { dropdownList } from "../../../constants/dropdownList";
-
 import { restore } from "../../../utils/syncUtils/restoreUtil";
 import {
   generalSettingList,
@@ -23,7 +21,6 @@ import toast from "react-hot-toast";
 import { openExternalUrl } from "../../../utils/serviceUtils/urlUtil";
 import ManagerUtil from "../../../utils/fileUtils/managerUtil";
 import PluginList from "../../../utils/readUtils/pluginList";
-import iconChoiceList from "../../readerSettings/iconChoiceList";
 declare var window: any;
 class SettingDialog extends React.Component<
   SettingInfoProps,
@@ -588,31 +585,6 @@ class SettingDialog extends React.Component<
                       }
                     >
                       {this.props.t(item.label)}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="setting-dialog-new-title">
-                <Trans>System font</Trans>
-                <select
-                  name=""
-                  className="lang-setting-dropdown"
-                  onChange={(event) => {
-                    this.changeFont(event.target.value);
-                  }}
-                >
-                  {iconChoiceList[0].option.map((item) => (
-                    <option
-                      value={item}
-                      key={item}
-                      className="lang-setting-option"
-                      selected={
-                        item === StorageUtil.getReaderConfig("systemFont")
-                          ? true
-                          : false
-                      }
-                    >
-                      {this.props.t(item)}
                     </option>
                   ))}
                 </select>

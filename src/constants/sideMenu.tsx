@@ -8,6 +8,11 @@ export const sideMenu = [
     name: "Favorites",
     icon: "heart",
     mode: "favorite",
+  },
+  {
+    name: "Deleted Books",
+    icon: "trash-line",
+    mode: "trash",
   }
   // ,
   // {
@@ -20,9 +25,5 @@ export const sideMenu = [
   //   icon: "highlight-line",
   //   mode: "digest",
   // },
-  // {
-  //   name: "Deleted Books",
-  //   icon: "trash-line",
-  //   mode: "trash",
-  // },
+
 ];

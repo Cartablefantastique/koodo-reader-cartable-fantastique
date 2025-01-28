@@ -238,10 +238,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
           <div
             className="setting-icon-container"
             onClick={() => {
-              this.props.handleAbout(!this.props.isAboutOpen);
-            }}
-            onMouseLeave={() => {
-              this.props.handleAbout(false);
+              this.props.handleSetting(true);
             }}
             style={{ marginTop: "2px" }}
           >

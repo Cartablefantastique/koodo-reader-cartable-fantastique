@@ -18,18 +18,6 @@ export const generalSettingList = [
     propName: "isDisableTrashBin",
   },
   {
-    isElectron: false,
-    title: "Hide books already added to the shelf",
-    desc: "Hide books which have been added to the shelf, so they won't show up in home page",
-    propName: "isHideShelfBook",
-  },
-  {
-    isElectron: false,
-    title: "Delete book from shelf also deleting book itself",
-    desc: "When deleting book from shelf, the book will be deleted as well",
-    propName: "isDeleteShelfBook",
-  },
-  {
     isElectron: true,
     title: "Disable screen blanking",
     desc: "When Koodo is running, your computer won't enter sleep mode",

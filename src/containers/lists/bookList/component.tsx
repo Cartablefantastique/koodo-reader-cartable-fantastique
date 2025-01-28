@@ -10,7 +10,6 @@ import BookModel from "../../../models/Book";
 import { BookListProps, BookListState } from "./interface";
 import StorageUtil from "../../../utils/serviceUtils/storageUtil";
 import { Redirect, withRouter } from "react-router-dom";
-import ViewMode from "../../../components/viewMode";
 import { backup } from "../../../utils/syncUtils/backupUtil";
 import { isElectron } from "react-device-detect";
 import SelectBook from "../../../components/selectBook";
@@ -244,9 +243,6 @@ class BookList extends React.Component<BookListProps, BookListState> {
               <Trans>Delete this shelf</Trans>
             </div>
           )}
-          <div style={this.props.isSelectBook ? { display: "none" } : {}}>
-            <ViewMode />
-          </div>
         </div>
         <div
           className="book-list-container-parent"

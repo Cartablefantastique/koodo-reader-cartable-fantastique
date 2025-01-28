@@ -10,7 +10,6 @@ import BookModel from "../../../models/Book";
 import { Trans } from "react-i18next";
 import { BookListProps, BookListState } from "./interface";
 import { Redirect, withRouter } from "react-router-dom";
-import ViewMode from "../../../components/viewMode";
 
 class BookList extends React.Component<BookListProps, BookListState> {
   constructor(props: BookListProps) {
@@ -182,7 +181,6 @@ class BookList extends React.Component<BookListProps, BookListState> {
           >
             <Trans>Delete all books</Trans>
           </div>
-          <ViewMode />
         </div>
       </>
     );

@@ -7,6 +7,7 @@ export interface HeaderProps {
   isAboutOpen: boolean;
   isCollapsed: boolean;
   isNewWarning: boolean;
+  isSettingOpen: boolean;
 
   bookmarks: BookmarkModel[];
   notes: NoteModel[];

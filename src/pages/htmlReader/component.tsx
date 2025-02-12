@@ -1,9 +1,7 @@
 import React from "react";
 import SettingPanel from "../../containers/panels/settingPanel";
 import NavigationPanel from "../../containers/panels/navigationPanel";
-import OperationPanel from "../../containers/panels/operationPanel";
 import { Toaster } from "react-hot-toast";
-import ProgressPanel from "../../containers/panels/progressPanel";
 import { ReaderProps, ReaderState } from "./interface";
 import StorageUtil from "../../utils/serviceUtils/storageUtil";
 import ReadingTime from "../../utils/readUtils/readingTime";
@@ -236,52 +234,6 @@ class Reader extends React.Component<ReaderProps, ReaderState> {
         >
           <span className="icon-grid panel-icon"></span>
         </div>
-        <div
-          className="top-panel"
-          onMouseEnter={() => {
-            if (
-              this.state.isTouch ||
-              this.state.isOpenTopPanel ||
-              this.state.isPreventTrigger
-            ) {
-              this.setState({ hoverPanel: "top" });
-              return;
-            }
-            this.handleEnterReader("top");
-          }}
-          style={this.state.hoverPanel === "top" ? { opacity: 0.5 } : {}}
-          onMouseLeave={() => {
-            this.setState({ hoverPanel: "" });
-          }}
-          onClick={() => {
-            this.handleEnterReader("top");
-          }}
-        >
-          <span className="icon-grid panel-icon"></span>
-        </div>
-        <div
-          className="bottom-panel"
-          onMouseEnter={() => {
-            if (
-              this.state.isTouch ||
-              this.state.isOpenBottomPanel ||
-              this.state.isPreventTrigger
-            ) {
-              this.setState({ hoverPanel: "bottom" });
-              return;
-            }
-            this.handleEnterReader("bottom");
-          }}
-          style={this.state.hoverPanel === "bottom" ? { opacity: 0.5 } : {}}
-          onMouseLeave={() => {
-            this.setState({ hoverPanel: "" });
-          }}
-          onClick={() => {
-            this.handleEnterReader("bottom");
-          }}
-        >
-          <span className="icon-grid panel-icon"></span>
-        </div>
 
         <div
           className="setting-panel-container"
@@ -313,38 +265,7 @@ class Reader extends React.Component<ReaderProps, ReaderState> {
         >
           <NavigationPanel {...{ time: this.state.time }} />
         </div>
-        <div
-          className="progress-panel-container"
-          onMouseLeave={(event) => {
-            this.handleLeaveReader("bottom");
-          }}
-          style={
-            this.state.isOpenBottomPanel
-              ? {}
-              : {
-                transform: "translateY(110px)",
-              }
-          }
-        >
-          <ProgressPanel {...{ time: this.state.time }} />
-        </div>
-        <div
-          className="operation-panel-container"
-          onMouseLeave={(event) => {
-            this.handleLeaveReader("top");
-          }}
-          style={
-            this.state.isOpenTopPanel
-              ? {}
-              : {
-                transform: "translateY(-110px)",
-              }
-          }
-        >
-          {this.props.htmlBook && (
-            <OperationPanel {...{ time: this.state.time }} />
-          )}
-        </div>
+       
 
         {this.props.currentBook.key && <Viewer {...renditionProps} />}
       </div>

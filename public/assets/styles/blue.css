@@ -13,7 +13,6 @@
 .update-dialog-container-button,
 .import-from-local,
 .single-control-switch,
-.side-menu-selector-container,
 .previous-chapter-single-container,
 .next-chapter-single-container,
 .book-bookmark-link,
@@ -29,16 +28,19 @@
 .card-list-item-show-more {
   color: rgba(1, 121, 202, 0.8) !important;
 }
+
 .single-control-container,
 .book-list-view {
   color: rgba(1, 121, 202, 1) !important;
 }
+
 .header-search-box,
 #jumpPage,
 #jumpChapter,
 #newTag {
   background-color: rgba(1, 121, 202, 0.1) !important;
 }
+
 .backup-page-close-icon:hover,
 .sidebar-list-icon:hover,
 .nav-close-icon:hover,

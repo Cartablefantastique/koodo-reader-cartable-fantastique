@@ -18,6 +18,41 @@
   font-weight: 500;
 }
 
+.container {
+  display: flex;
+  align-items: center;
+  /* Aligner les éléments */
+  gap: 15px;
+  /* Ajouter un espace entre les deux */
+}
+
+.bibliotheque-box {
+  font-size: 16px;
+  font-weight: bold;
+  color: black;
+  border: 2px solid black;
+  /* Bordure noire sur les 4 côtés */
+  border-radius: 5px;
+  background-color: white;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 25px;
+  margin-left: 0px;
+  margin-right: 20px;
+  padding: 0px 5px;
+  /* Ajuste la hauteur pour s’aligner avec le bouton */
+}
+
+.import-container {
+  display: flex;
+  align-items: center;
+  /* Aligne verticalement */
+
+  /* Espacement entre les éléments */
+}
+
 .import-book-box {
   position: relative;
   bottom: 67px;
@@ -29,6 +64,7 @@
   cursor: pointer;
   font-size: 0;
 }
+
 .drag-section {
   position: absolute;
   top: 75px;
@@ -43,7 +79,18 @@
 .side-menu-addbooks {
   width: 100%;
   height: 39px;
-  border-radius: 25px;
+  margin-left: 60px;
+  border-radius: 6px;
+  line-height: 39px;
+  z-index: -1;
+  animation: slidein 0.1s ease-in-out 0s 1;
+}
+
+
+.side-menu-books {
+  width: 100%;
+  height: 39px;
+  border-radius: 10px;
   line-height: 39px;
   z-index: -1;
   animation: slidein 0.1s ease-in-out 0s 1;

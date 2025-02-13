@@ -1,12 +1,12 @@
 import React from "react";
 import Sidebar from "../../containers/sidebar";
-import Header from "../../containers/header";
 import DeleteDialog from "../../components/dialogs/deleteDialog";
 import EditDialog from "../../components/dialogs/editDialog";
 import AddDialog from "../../components/dialogs/addDialog";
 import SortDialog from "../../components/dialogs/sortDialog";
 import AboutDialog from "../../components/dialogs/aboutDialog";
 import BackupDialog from "../../components/dialogs/backupDialog";
+import Header from "../../containers/header";
 import "./manager.css";
 import { ManagerProps, ManagerState } from "./interface";
 import { Trans } from "react-i18next";
@@ -80,7 +80,7 @@ class Manager extends React.Component<ManagerProps, ManagerState> {
     let { books } = this.props;
     return (
       <div
-        className="manager"
+        className=""
         onDragEnter={() => {
           !this.props.dragItem && this.handleDrag(true);
           (
@@ -107,20 +107,20 @@ class Manager extends React.Component<ManagerProps, ManagerState> {
             }}
             style={
               this.props.isSettingOpen ||
-              this.props.isOpenFeedbackDialog ||
-              this.props.isBackup ||
-              this.props.isShowNew ||
-              this.props.isOpenDeleteDialog ||
-              this.props.isOpenEditDialog ||
-              this.props.isDetailDialog ||
-              this.props.isOpenAddDialog ||
-              this.props.isTipDialog ||
-              this.props.isShowLoading ||
-              this.state.isDrag
+                this.props.isOpenFeedbackDialog ||
+                this.props.isBackup ||
+                this.props.isShowNew ||
+                this.props.isOpenDeleteDialog ||
+                this.props.isOpenEditDialog ||
+                this.props.isDetailDialog ||
+                this.props.isOpenAddDialog ||
+                this.props.isTipDialog ||
+                this.props.isShowLoading ||
+                this.state.isDrag
                 ? {}
                 : {
-                    display: "none",
-                  }
+                  display: "none",
+                }
             }
           >
             {this.state.isDrag && (
@@ -133,33 +133,52 @@ class Manager extends React.Component<ManagerProps, ManagerState> {
             )}
           </div>
         )}
-        <Sidebar {...{ handleDrag: this.handleDrag }}/>
-        <Toaster />
-        <Header {...{ handleDrag: this.handleDrag }} />
-        {this.props.isOpenDeleteDialog && <DeleteDialog />}
-        {this.props.isOpenEditDialog && <EditDialog />}
-        {this.props.isOpenAddDialog && <AddDialog />}
-        {this.props.isShowLoading && <LoadingDialog />}
-        {this.props.isSortDisplay && <SortDialog />}
-        {this.props.isAboutOpen && <AboutDialog />}
-        {this.props.isBackup && <BackupDialog />}
-        {this.props.isOpenFeedbackDialog && <FeedbackDialog />}{" "}
-        {this.props.isSettingOpen && <SettingDialog />}
-        {this.props.isTipDialog && <TipDialog />}
-        {this.props.isDetailDialog && <DetailDialog />}
-        {(!books || books.length === 0) && this.state.totalBooks ? (
-          <Redirect to="/manager/loading" />
-        ) : (
-          <Switch>
-            {routes.map((ele) => (
-              <Route
-                render={() => <ele.component />}
-                key={ele.path}
-                path={ele.path}
-              />
-            ))}
-          </Switch>
-        )}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+
+          }}
+        >
+          <div
+
+          >
+            <Sidebar {...{ handleDrag: this.handleDrag }} />
+          </div>
+
+          <Toaster />
+          <Header {...{ handleDrag: this.handleDrag }} />
+          {this.props.isOpenDeleteDialog && <DeleteDialog />}
+          {this.props.isOpenEditDialog && <EditDialog />}
+          {this.props.isOpenAddDialog && <AddDialog />}
+          {this.props.isShowLoading && <LoadingDialog />}
+          {this.props.isSortDisplay && <SortDialog />}
+          {this.props.isAboutOpen && <AboutDialog />}
+          {this.props.isBackup && <BackupDialog />}
+          {this.props.isOpenFeedbackDialog && <FeedbackDialog />}
+          {this.props.isSettingOpen && <SettingDialog />}
+          {this.props.isTipDialog && <TipDialog />}
+          {this.props.isDetailDialog && <DetailDialog />}
+
+          {(!books || books.length === 0) && this.state.totalBooks ? (
+            <Redirect to="/manager/loading" />
+          ) : (
+            <div
+
+            >
+              <Switch>
+                {routes.map((ele) => (
+                  <Route
+                    render={() => <ele.component />}
+                    key={ele.path}
+                    path={ele.path}
+                  />
+                ))}
+              </Switch>
+            </div>
+          )}
+        </div>
+
       </div>
     );
   }

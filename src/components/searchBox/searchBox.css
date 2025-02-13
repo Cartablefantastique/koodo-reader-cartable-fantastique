@@ -1,8 +1,11 @@
 .header-search-box {
-  width: -moz-available;          /* WebKit-based browsers will ignore this. */
-  width: -webkit-fill-available;  /* Mozilla-based browsers will ignore this. */
-  width: stretch;
-  height: 39px;
+  width: -moz-available;
+  /* WebKit-based browsers will ignore this. */
+  width: -webkit-fill-available;
+  /* Mozilla-based browsers will ignore this. */
+  width: 120px;
+  height: 19px;
+  margin-top: 16px;
   border-radius: 22px;
   border-style: none;
   outline: none;
@@ -10,6 +13,7 @@
   padding: 0px;
   padding-left: 20px;
 }
+
 .header-search-box::placeholder {
   font-size: 15px;
   line-height: 39px;
@@ -18,16 +22,20 @@
   overflow: hidden;
   width: calc(100% - 40px);
 }
+
 .header-search-icon {
-  font-size: 22px;
+  font-size: 16px;
   display: inline-block;
   opacity: 0.6;
   cursor: pointer;
 }
+
 .header-search-text {
   position: absolute;
   top: 0px;
   right: 0px;
+  margin-right: 140px;
+  margin-top: 8px;
   font-size: 15px;
   display: inline-block;
   width: 40px;
@@ -37,9 +45,11 @@
   align-items: center;
   justify-content: center;
 }
+
 .header-search-text:hover {
   border-radius: 50%;
 }
+
 .search-text {
   font-size: 18px;
   position: relative;

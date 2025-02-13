@@ -57,6 +57,7 @@ body {
 .header-search-text {
   color: rgba(235, 235, 235, 0.8);
 }
+
 .delete-digest-button,
 .add-dialog-confirm,
 .backup-page-backup-selector,
@@ -78,7 +79,7 @@ body {
 .message-box-container,
 .only-local-icon,
 .popup-close {
-  background-color: rgba(71, 76, 80, 1);
+  background-color: rgb(11, 13, 44);
   color: rgba(235, 235, 235, 1);
 }
 
@@ -121,9 +122,11 @@ body {
 .copy-option:hover {
   background-color: rgba(235, 235, 235, 0.035);
 }
+
 .drag-background {
   background: hsla(0, 0%, 100%, 0.2);
 }
+
 .action-dialog-container,
 .select-more-actions,
 .add-dialog-container,
@@ -151,6 +154,7 @@ body {
   background: rgba(47, 52, 55, 1);
   box-shadow: 0px 0px 7px rgba(0, 0, 0, 0.2);
 }
+
 .book-item-image,
 .book-item-cover,
 .book-cover,
@@ -160,6 +164,7 @@ body {
   background: rgba(235, 235, 235, 0.1);
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.18);
 }
+
 .backup-page-backup-selector,
 .message-box-container {
   box-shadow: 0px 0px 12px rgba(75, 75, 75, 1);
@@ -173,6 +178,7 @@ body {
 .navigation-header {
   box-shadow: 0px 0px 5px rgba(30, 30, 30, 1);
 }
+
 .background-color-circle,
 .background-box1,
 .background-box2,
@@ -204,6 +210,7 @@ body {
 .progress-slide-circle {
   background: rgba(47, 52, 55, 1);
 }
+
 .single-control-switch,
 ::-webkit-scrollbar-thumb,
 ::-webkit-scrollbar-thumb:hover,
@@ -212,6 +219,7 @@ body {
 .sk-chase-dot:before {
   background-color: rgba(235, 235, 235, 1) !important;
 }
+
 .exit-reading-text,
 .add-bookmark-text,
 .token-dialog-token-text,
@@ -247,6 +255,7 @@ input,
 .input-value {
   color: rgba(235, 235, 235, 1);
 }
+
 .book-content-name,
 .book-subcontent-name,
 .book-bookmark-list,
@@ -254,6 +263,7 @@ input,
 .sort-dialog-seperator {
   border-bottom: 1px solid rgba(235, 235, 235, 0.5);
 }
+
 .popup-menu-triangle-up,
 .active-tag,
 .active-page,

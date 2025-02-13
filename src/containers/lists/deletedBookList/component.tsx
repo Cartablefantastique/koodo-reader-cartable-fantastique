@@ -48,7 +48,7 @@ class BookList extends React.Component<BookListProps, BookListState> {
       rect.top >= 0 &&
       rect.left >= 0 &&
       rect.bottom <=
-        (window.innerHeight || document.documentElement.clientHeight) &&
+      (window.innerHeight || document.documentElement.clientHeight) &&
       rect.right <= (window.innerWidth || document.documentElement.clientWidth)
     );
   };
@@ -79,7 +79,7 @@ class BookList extends React.Component<BookListProps, BookListState> {
     let books = !this.props.isBookSort
       ? this.handleKeyFilter(this.props.deletedBooks, AddTrash.getAllTrash())
       : this.props.isBookSort
-      ? this.handleIndexFilter(
+        ? this.handleIndexFilter(
           this.handleKeyFilter(this.props.deletedBooks, AddTrash.getAllTrash()),
           //return the sorted book index
           SortUtil.sortBooks(
@@ -87,19 +87,19 @@ class BookList extends React.Component<BookListProps, BookListState> {
             this.props.bookSortCode
           ) || []
         )
-      : this.props.isBookSort
-      ? this.handleIndexFilter(
-          this.props.deletedBooks,
-          //return the sorted book index
-          SortUtil.sortBooks(
+        : this.props.isBookSort
+          ? this.handleIndexFilter(
             this.props.deletedBooks,
-            this.props.bookSortCode
-          ) || []
-        )
-      : this.handleKeyFilter(
-          this.props.deletedBooks,
-          RecordRecent.getAllRecent()
-        );
+            //return the sorted book index
+            SortUtil.sortBooks(
+              this.props.deletedBooks,
+              this.props.bookSortCode
+            ) || []
+          )
+          : this.handleKeyFilter(
+            this.props.deletedBooks,
+            RecordRecent.getAllRecent()
+          );
     if (books.length === 0) {
       return <Redirect to="/manager/empty" />;
     }

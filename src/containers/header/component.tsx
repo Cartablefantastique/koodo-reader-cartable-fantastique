@@ -66,8 +66,8 @@ class Header extends React.Component<HeaderProps, HeaderState> {
       let storageLocation = localStorage.getItem("storageLocation")
         ? localStorage.getItem("storageLocation")
         : window
-            .require("electron")
-            .ipcRenderer.sendSync("storage-location", "ping");
+          .require("electron")
+          .ipcRenderer.sendSync("storage-location", "ping");
       let sourcePath = path.join(
         storageLocation,
         "config",
@@ -83,7 +83,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
         if (
           localStorage.getItem("lastSyncTime") &&
           parseInt(readerConfig.lastSyncTime) >
-            parseInt(localStorage.getItem("lastSyncTime")!)
+          parseInt(localStorage.getItem("lastSyncTime")!)
         ) {
           this.setState({ isdataChange: true });
         }
@@ -106,8 +106,8 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     let storageLocation = localStorage.getItem("storageLocation")
       ? localStorage.getItem("storageLocation")
       : window
-          .require("electron")
-          .ipcRenderer.sendSync("storage-location", "ping");
+        .require("electron")
+        .ipcRenderer.sendSync("storage-location", "ping");
     let sourcePath = path.join(storageLocation, "config");
     let outPath = path.join(storageLocation, "config.zip");
     await zip(sourcePath, outPath);
@@ -126,8 +126,8 @@ class Header extends React.Component<HeaderProps, HeaderState> {
       let storageLocation = localStorage.getItem("storageLocation")
         ? localStorage.getItem("storageLocation")
         : window
-            .require("electron")
-            .ipcRenderer.sendSync("storage-location", "ping");
+          .require("electron")
+          .ipcRenderer.sendSync("storage-location", "ping");
       let sourcePath = path.join(
         storageLocation,
         "config",
@@ -165,8 +165,8 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     let storageLocation = localStorage.getItem("storageLocation")
       ? localStorage.getItem("storageLocation")
       : window
-          .require("electron")
-          .ipcRenderer.sendSync("storage-location", "ping");
+        .require("electron")
+        .ipcRenderer.sendSync("storage-location", "ping");
     let sourcePath = path.join(storageLocation, "config", "readerConfig.json");
     fs.readFile(sourcePath, "utf8", async (err, data) => {
       if (err || !data) {
@@ -179,7 +179,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
         readerConfig &&
         localStorage.getItem("lastSyncTime") &&
         parseInt(readerConfig.lastSyncTime) >
-          parseInt(localStorage.getItem("lastSyncTime")!)
+        parseInt(localStorage.getItem("lastSyncTime")!)
       ) {
         this.syncFromLocation();
       } else {
@@ -230,45 +230,9 @@ class Header extends React.Component<HeaderProps, HeaderState> {
           >
             <span
               data-tooltip-id="my-tooltip"
-              data-tooltip-content={this.props.t("Sort by")}
+            // data-tooltip-content={this.props.t("Sort by")}
             >
               <span className="icon-sort-desc header-sort-icon"></span>
-            </span>
-          </div>
-          <div
-            className="setting-icon-container"
-            onClick={() => {
-              this.props.handleSetting(true);
-            }}
-            style={{ marginTop: "2px" }}
-          >
-            <span
-              data-tooltip-id="my-tooltip"
-              data-tooltip-content={this.props.t("Setting")}
-            >
-              <span
-                className="icon-setting setting-icon"
-                style={
-                  this.props.isNewWarning ? { color: "rgb(35, 170, 242)" } : {}
-                }
-              ></span>
-            </span>
-          </div>
-          <div
-            className="setting-icon-container"
-            onClick={() => {
-              this.props.handleBackupDialog(true);
-            }}
-            onMouseLeave={() => {
-              this.props.handleSortDisplay(false);
-            }}
-            style={{ marginTop: "1px" }}
-          >
-            <span
-              data-tooltip-id="my-tooltip"
-              data-tooltip-content={this.props.t("Backup")}
-            >
-              <span className="icon-archive header-archive-icon"></span>
             </span>
           </div>
           {isElectron && (

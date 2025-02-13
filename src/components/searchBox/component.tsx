@@ -22,11 +22,11 @@ class SearchBox extends React.Component<SearchBoxProps> {
     let results =
       this.props.tabMode === "note"
         ? SearchUtil.mouseNoteSearch(
-            this.props.notes.filter((item) => item.notes !== "")
-          )
+          this.props.notes.filter((item) => item.notes !== "")
+        )
         : this.props.tabMode === "digest"
-        ? SearchUtil.mouseNoteSearch(this.props.digests)
-        : SearchUtil.mouseSearch(this.props.books);
+          ? SearchUtil.mouseNoteSearch(this.props.digests)
+          : SearchUtil.mouseSearch(this.props.books);
     if (results) {
       this.props.handleSearchResults(results);
       this.props.handleSearch(true);
@@ -43,12 +43,12 @@ class SearchBox extends React.Component<SearchBoxProps> {
     let results =
       this.props.tabMode === "note"
         ? SearchUtil.keyNoteSearch(
-            event,
-            this.props.notes.filter((item) => item.notes !== "")
-          )
+          event,
+          this.props.notes.filter((item) => item.notes !== "")
+        )
         : this.props.tabMode === "digest"
-        ? SearchUtil.keyNoteSearch(event, this.props.digests)
-        : SearchUtil.keySearch(event, this.props.books);
+          ? SearchUtil.keyNoteSearch(event, this.props.digests)
+          : SearchUtil.keySearch(event, this.props.books);
     if (results) {
       this.props.handleSearchResults(results);
       this.props.handleSearch(true);
@@ -92,22 +92,14 @@ class SearchBox extends React.Component<SearchBoxProps> {
             this.props.mode === "nav" &&
               this.props.handleNavSearchState("focused");
           }}
-          placeholder={
-            this.props.isNavSearch || this.props.mode === "nav"
-              ? this.props.t("Search in the Book")
-              : this.props.tabMode === "note"
-              ? this.props.t("Search my notes")
-              : this.props.tabMode === "digest"
-              ? this.props.t("Search my highlights")
-              : this.props.t("Search my library")
-          }
+
           style={
             this.props.mode === "nav"
               ? {
-                  width: this.props.width,
-                  height: this.props.height,
-                  paddingRight: "30px",
-                }
+                width: this.props.width,
+                height: this.props.height,
+                paddingRight: "30px",
+              }
               : {}
           }
           onCompositionStart={() => {

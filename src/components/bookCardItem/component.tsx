@@ -88,8 +88,8 @@ class BookCardItem extends React.Component<BookCardProps, BookCardState> {
       this.props.handleSelectedBooks(
         this.props.isSelected
           ? this.props.selectedBooks.filter(
-              (item) => item !== this.props.book.key
-            )
+            (item) => item !== this.props.book.key
+          )
           : [...this.props.selectedBooks, this.props.book.key]
       );
       return;
@@ -109,7 +109,7 @@ class BookCardItem extends React.Component<BookCardProps, BookCardState> {
         percentage =
           RecordLocation.getPDFLocation(this.props.book.md5.split("-")[0])
             .page /
-            this.props.book.page +
+          this.props.book.page +
           "";
       }
     } else {
@@ -146,22 +146,22 @@ class BookCardItem extends React.Component<BookCardProps, BookCardState> {
             style={
               StorageUtil.getReaderConfig("isDisableCrop") === "yes"
                 ? {
-                    height: "168px",
-                    alignItems: "flex-end",
-                    background: "rgba(255, 255,255, 0)",
-                    boxShadow: "0px 0px 5px rgba(0, 0, 0, 0)",
-                  }
+                  height: "168px",
+                  alignItems: "flex-end",
+                  background: "rgba(255, 255,255, 0)",
+                  boxShadow: "0px 0px 5px rgba(0, 0, 0, 0)",
+                }
                 : {
-                    height: "137px",
-                    alignItems: "center",
-                    overflow: "hidden",
-                  }
+                  height: "137px",
+                  alignItems: "center",
+                  overflow: "hidden",
+                }
             }
           >
             {!this.props.book.cover ||
-            this.props.book.cover === "noCover" ||
-            (this.props.book.format === "PDF" &&
-              StorageUtil.getReaderConfig("isDisablePDFCover") === "yes") ? (
+              this.props.book.cover === "noCover" ||
+              (this.props.book.format === "PDF" &&
+                StorageUtil.getReaderConfig("isDisablePDFCover") === "yes") ? (
               <div className="book-item-image">
                 <EmptyCover
                   {...{
@@ -178,7 +178,7 @@ class BookCardItem extends React.Component<BookCardProps, BookCardState> {
                 className="lazy-image book-item-image"
                 style={
                   this.state.direction === "horizontal" ||
-                  StorageUtil.getReaderConfig("isDisableCrop") === "yes"
+                    StorageUtil.getReaderConfig("isDisableCrop") === "yes"
                     ? { width: "100%" }
                     : { height: "100%" }
                 }
@@ -206,8 +206,8 @@ class BookCardItem extends React.Component<BookCardProps, BookCardState> {
                   this.props.handleSelectedBooks(
                     this.props.isSelected
                       ? this.props.selectedBooks.filter(
-                          (item) => item !== this.props.book.key
-                        )
+                        (item) => item !== this.props.book.key
+                      )
                       : [...this.props.selectedBooks, this.props.book.key]
                   );
                 } else {
@@ -221,8 +221,8 @@ class BookCardItem extends React.Component<BookCardProps, BookCardState> {
                 this.props.isSelected
                   ? { opacity: 1 }
                   : {
-                      color: "#eee",
-                    }
+                    color: "#eee",
+                  }
               }
             ></span>
           ) : null}
@@ -234,10 +234,10 @@ class BookCardItem extends React.Component<BookCardProps, BookCardState> {
                 ? Math.floor(parseFloat(percentage) * 100) === 0
                   ? "New"
                   : Math.floor(parseFloat(percentage) * 100) < 10
-                  ? Math.floor(parseFloat(percentage) * 100)
-                  : Math.floor(parseFloat(percentage) * 100) === 100
-                  ? "Done"
-                  : Math.floor(parseFloat(percentage) * 100)
+                    ? Math.floor(parseFloat(percentage) * 100)
+                    : Math.floor(parseFloat(percentage) * 100) === 100
+                      ? "Done"
+                      : Math.floor(parseFloat(percentage) * 100)
                 : "0"}
               {Math.floor(parseFloat(percentage) * 100) > 0 &&
                 Math.floor(parseFloat(percentage) * 100) < 100 && (
@@ -258,7 +258,7 @@ class BookCardItem extends React.Component<BookCardProps, BookCardState> {
         </div>
 
         {this.props.isOpenActionDialog &&
-        this.props.book.key === this.props.currentBook.key ? (
+          this.props.book.key === this.props.currentBook.key ? (
           <div className="action-dialog-parent">
             <ActionDialog {...actionProps} />
           </div>

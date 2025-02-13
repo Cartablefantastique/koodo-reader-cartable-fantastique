@@ -262,30 +262,12 @@ class ImportLocal extends React.Component<ImportLocalProps, ImportLocalState> {
       >
         {({ getRootProps, getInputProps }) => (
           <>
-            <div className="side-menu-hover-container"></div>
-
             <div
-              className="side-menu-selector side-menu-addbooks"
+              className="side-menu-selector"
               {...getRootProps()}
-              style={
-                this.props.isCollapsed && document.body.clientWidth < 640
-                  ? { width: "39px" }
-                  : {}
-              }
+              style={{ width: 250, marginLeft: 0 }}
             >
-              <div className="side-menu-icon" style={this.props.isCollapsed ? {} : { marginLeft: "38px" }}>
-
-                <span
-                  className="icon-folder"
-                  style={
-                    this.props.isCollapsed
-                      ? { position: "relative", marginLeft: "-9px" }
-                      : {}
-                  }
-                ></span>
-
-
-
+              <div className="side-menu-icon" style={{ marginLeft: "0px" }}>
                 <input
                   type="file"
                   id="import-book-box"
@@ -295,17 +277,24 @@ class ImportLocal extends React.Component<ImportLocalProps, ImportLocalState> {
                 />
               </div>
               <span
-                  style={
-                    this.props.isCollapsed
-                      ? { display: "none", width: "70%" }
-                      : { width: "60%" }
-                  }
-                >
-                  Ajouter un livre
-                </span>
+                className="side-menu-addbooks"
+                style={{
+                  width: "60%",
+                  textAlign: "center",
+                  whiteSpace: "pre-line",
+                  lineHeight: "1.2em",
+                  marginTop: "auto",
+                  marginBottom: "auto",
+                  position: "relative",
+                }}
+              >
+
+                Ajouter{'\n'}un livre
+              </span>
             </div>
           </>
         )}
+
       </Dropzone>
     );
   }

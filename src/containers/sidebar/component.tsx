@@ -8,6 +8,7 @@ import { openExternalUrl } from "../../utils/serviceUtils/urlUtil";
 import ShelfUtil from "../../utils/readUtils/shelfUtil";
 import DeletePopup from "../../components/dialogs/deletePopup";
 import ImportLocal from "../../components/importLocal";
+import Header from "../../containers/header";
 
 class Sidebar extends React.Component<SidebarProps, SidebarState> {
   constructor(props: SidebarProps) {
@@ -16,14 +17,14 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
       index: 0,
       hoverIndex: -1,
       hoverShelfIndex: -1,
+      isDrag: false,
       isOpenDelete: false,
       shelfIndex: 0,
       windowWidth: window.innerWidth,
       isCollapsed:
-      window.innerWidth < 640 ? true : (StorageUtil.getReaderConfig("isCollapsed") === "yes" || false)
+        window.innerWidth < 640 ? true : (StorageUtil.getReaderConfig("isCollapsed") === "yes" || false)
     };
   }
-
   componentDidMount() {
     this.props.handleMode(
       document.URL.split("/").reverse()[0] === "empty"
@@ -32,7 +33,7 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
     );
     window.onresize = () => window.innerWidth < 640 ? this.handleCollapse(true) : this.handleCollapse(this.state.isCollapsed);
   }
-  
+
   handleSidebar = (mode: string, index: number) => {
     this.setState({ index: index });
     this.props.handleSelectBook(false);
@@ -66,6 +67,9 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
       this.props.handleMode("shelf");
     });
   };
+  handleDrag = (isDrag: boolean) => {
+    this.setState({ isDrag });
+  };
   handleDeletePopup = (isOpenDelete: boolean) => {
     this.setState({ isOpenDelete });
   };
@@ -76,9 +80,9 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
           <li
             key={item.name}
             className={
-              this.state.index === index && this.props.mode !== "shelf"
-                ? "active side-menu-item"
-                : "side-menu-item"
+              this.state.index === index && this.props.mode !== "shelf" && this.state.index != 1
+                ? "active side-menu-item side-menu-item-active side-menu-item"
+                : "side-menu-item side-menu-item-inactive"
             }
             id={`sidebar-${item.icon}`}
             onClick={() => {
@@ -117,27 +121,21 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
                   }
                   style={
                     this.props.isCollapsed
-                      ? { position: "relative", marginLeft: "-9px" }
-                      : {}
+                      ? { position: "relative", marginLeft: "-50px" }
+                      : { position: "relative", marginLeft: "-50px" }
                   }
                 ></span>
               </div>
 
-              <span
-                style={
-                  this.props.isCollapsed
-                    ? { display: "none", width: "70%" }
-                    : { width: "60%" }
-                }
-              >
-                {this.props.t(item.name)}
-              </span>
+              <div className="side-menu-selector" >
+                <span className="side-menu-selector-bis">{this.props.t(item.name)}</span>
+              </div>
             </div>
           </li>
+
         );
       });
     };
-
     const deletePopupProps = {
       mode: "shelf",
       name: Object.keys(ShelfUtil.getShelf())[this.state.shelfIndex],
@@ -149,28 +147,11 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
     return (
       <>
         <div className="sidebar">
-        <img
-            src="./assets/icon.png"
-            alt="Icone du cartable fantastique"
-            onClick={() => {
-              this.handleJump("https://www.cartablefantastique.fr/");
-            }}
-            className="logo u-mobile"
-          />
-          <div
-            className="sidebar-list-icon u-no-mobile"
-            onClick={() => {
-              this.handleCollapse(!this.state.isCollapsed);
-            }}
-          >
-            <span className="icon-menu sidebar-list"></span>
-          </div>
-
           <img
             src={
               StorageUtil.getReaderConfig("appSkin") === "night" ||
-              (StorageUtil.getReaderConfig("appSkin") === "system" &&
-                StorageUtil.getReaderConfig("isOSNight") === "yes")
+                (StorageUtil.getReaderConfig("appSkin") === "system" &&
+                  StorageUtil.getReaderConfig("isOSNight") === "yes")
                 ? "./assets/label_light.png"
                 : "./assets/label.png"
             }
@@ -185,23 +166,30 @@ class Sidebar extends React.Component<SidebarProps, SidebarState> {
             className="side-menu-container-parent"
             style={this.state.isCollapsed ? { width: "70px" } : {}}
           >
-            
+
             <ul className="side-menu-container">
-            <li
-            key={"side-menu-item-addbooks"}
-            className={"side-menu-item"}
-            id={`sidebar-add-books`}
-            style={this.props.isCollapsed ? { width: 40, marginLeft: 15 } : {}}
-          >
-                <ImportLocal
-                      {...{
-                        handleDrag: this.props.handleDrag,
-                      }}
-                />
+              <li
+                key={"side-menu-item-addbooks"}
+                className={"side-menu-item"}
+                id={`sidebar-add-books`}
+                style={{ width: 250, marginLeft: 0 }}
+              >
+                <div className="import-container" style={{ marginLeft: "-25px" }}>
+
+                  <ImportLocal
+                    {...{
+                      handleDrag: this.props.handleDrag,
+                    }}
+                  />
+                </div>
               </li>
-              {renderSideMenu()}</ul>
+              <li>{renderSideMenu()}</li>
+
+            </ul>
+
           </div>
         </div>
+        {/* <Header {...{ handleDrag: this.handleDrag }} /> */}
         {this.state.isOpenDelete && <DeletePopup {...deletePopupProps} />}
       </>
     );

@@ -147,47 +147,60 @@ class Reader extends React.Component<ReaderProps, ReaderState> {
     return (
       <div className="viewer">
         <Tooltip id="my-tooltip" style={{ zIndex: 25 }} />
-        {StorageUtil.getReaderConfig("isHidePageButton") !== "yes" && (
-          <>
-            <div
-              className="previous-chapter-single-container"
-              onClick={async () => {
-                if (lock) return;
-                lock = true;
-                await this.props.htmlBook.rendition.prev();
-                this.handleLocation();
-                setTimeout(() => (lock = false), throttleTime);
+          {StorageUtil.getReaderConfig("isHidePageButton") !== "yes" && (
+            <>
+                <div
+                  className="previous-chapter-single-container"
+                  onClick={async () => {
+                    if (lock) return;
+                    lock = true;
+                    await this.props.htmlBook.rendition.prev();
+                    this.handleLocation();
+                    setTimeout(() => (lock = false), throttleTime);
+                  }}
+                >
+                  <span className="icon-dropdown previous-chapter-single"></span>
+                </div>
+
+                <div
+                  className="next-chapter-single-container"
+                  onClick={async () => {
+                    if (lock) return;
+                    lock = true;
+                    await this.props.htmlBook.rendition.next();
+                    this.handleLocation();
+                    setTimeout(() => (lock = false), throttleTime);
+                  }}
+                >
+                  <span className="icon-dropdown next-chapter-single"></span>
+                </div>
+            </>
+          )}
+          {StorageUtil.getReaderConfig("isHideMenuButton") !== "yes" && (
+            <div className="reader-setting-container">
+              <div
+                className="reader-setting-icon-containerLeft"
+                onClick={() => {
+                  this.handleEnterReader("left");
+                  this.handleLeaveReader("right");
+                }}
+              >
+                <span className="icon-grid reader-setting-icon"></span>
+              </div>
+
+              <div
+              className="reader-setting-icon-containerRight"
+              onClick={() => {
+                this.handleEnterReader("right");
+                this.handleLeaveReader("left");
               }}
             >
-              <span className="icon-dropdown previous-chapter-single"></span>
+              <span className="icon-grid reader-setting-icon"></span>
             </div>
-            <div
-              className="next-chapter-single-container"
-              onClick={async () => {
-                if (lock) return;
-                lock = true;
-                await this.props.htmlBook.rendition.next();
-                this.handleLocation();
-                setTimeout(() => (lock = false), throttleTime);
-              }}
-            >
-              <span className="icon-dropdown next-chapter-single"></span>
-            </div>
-          </>
-        )}
-        {StorageUtil.getReaderConfig("isHideMenuButton") !== "yes" && (
-          <div
-            className="reader-setting-icon-container"
-            onClick={() => {
-              this.handleEnterReader("left");
-              this.handleEnterReader("right");
-              this.handleEnterReader("bottom");
-              this.handleEnterReader("top");
-            }}
-          >
-            <span className="icon-grid reader-setting-icon"></span>
+            
+
           </div>
-        )}
+          )}
         <Toaster />
 
         <div

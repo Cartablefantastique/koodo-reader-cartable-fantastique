@@ -232,12 +232,12 @@
   margin: 8px;
   opacity: 0.5;
 }
-.reader-setting-icon-container {
+.reader-setting-icon-containerLeft {
   width: 50px;
   height: 50px;
   position: absolute;
   top: -3px;
-  right: 5px;
+  left: 15px;
   font-size: 20px;
   cursor: pointer;
   z-index: 10;
@@ -248,6 +248,26 @@
   align-items: center;
   transition: 0, 2s;
 }
-.reader-setting-icon-container:hover {
+.reader-setting-icon-containerLeft:hover {
+  border-radius: 50%;
+}
+
+.reader-setting-icon-containerRight {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: -3px;
+  right: 15px;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 10;
+  transition: 0.1s;
+  line-height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0, 2s;
+}
+.reader-setting-icon-containerRight:hover {
   border-radius: 50%;
 }

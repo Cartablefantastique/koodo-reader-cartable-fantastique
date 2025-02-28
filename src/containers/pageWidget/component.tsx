@@ -79,7 +79,7 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
                   : {}
               }
             >
-              {this.props.currentChapter}
+              Chapitre {this.props.currentChapter}
             </p>
           )}
           {!this.state.isHideHeader &&
@@ -113,7 +113,7 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
                   : {}
               }
             >
-              <Trans i18nKey="Book page" count={this.state.prevPage}>
+              <Trans i18nKey="Book page" count={this.state.prevPage} total={this.props.currentChapter}>
                 Page
                 {{
                   count: this.state.prevPage,
@@ -125,9 +125,10 @@ class Background extends React.Component<BackgroundProps, BackgroundState> {
             this.state.nextPage > 0 &&
             !this.state.isSingle && (
               <p className="background-page-right">
-                <Trans i18nKey="Book page" count={this.state.nextPage}>
+                <Trans i18nKey="Book page" count={this.state.nextPage} total={this.props.htmlBook.rendition.getPosition()}>
                   Page
                   {{
+                    test : this.props.currentChapter,
                     count: this.state.nextPage,
                   }}
                 </Trans>

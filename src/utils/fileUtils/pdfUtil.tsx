@@ -1,4 +1,4 @@
-import { lines, pdfColors } from "../../constants/themeList";
+import { threeColorlines, twoColorlines, pdfColors } from "../../constants/themeList";
 import { getPDFIframeDoc } from "../serviceUtils/docUtil";
 
 declare var window: any;
@@ -164,7 +164,7 @@ export const showPDFHighlight = (
             : "border-bottom: ") +
           (colorCode.indexOf("color") > -1
             ? pdfColors[colorCode.split("-")[1]]
-            : `2px solid ${lines[colorCode.split("-")[1]]}`) +
+            : `2px solid ${threeColorlines[colorCode.split("-")[1]]}`) +
           "; left:" +
           Math.min(bounds[0], bounds[2]) +
           "px; top:" +

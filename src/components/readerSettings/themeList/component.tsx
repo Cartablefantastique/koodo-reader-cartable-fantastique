@@ -1,5 +1,5 @@
 import React from "react";
-import { backgroundList, colorsHighlightLignes, threeColorlines, twoColorlines, textList } from "../../../constants/themeList";
+import { backgroundList, colorsHighlightLignes, threeColorlines, twoColorlines, textList, colorsHighlightLignesOneColor } from "../../../constants/themeList";
 import StyleUtil from "../../../utils/readUtils/styleUtil";
 import "./themeList.css";
 import { Trans } from "react-i18next";
@@ -11,6 +11,7 @@ import ThemeUtil from "../../../utils/readUtils/themeUtil";
 import BookUtil from "../../../utils/fileUtils/bookUtil";
 import Lignescouleurs1 from "../../../assets/Lignescouleurs1.png"
 import Lignescouleurs2 from "../../../assets/Lignescouleurs2.png"
+import SurLignerLignes1 from "../../../assets/SurLignerLignes1.png";
 import SurLignerLignes2 from "../../../assets/SurLignerLignes2.png";
 import gomme1 from "../../../assets/gomme1.png";
 import lecture from "../../../assets/icons/lecture.jpg"
@@ -300,6 +301,15 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
           >
 
             <img src={SurLignerLignes2} alt="SurlignerLignes" />
+          </button>
+
+          <button
+            id="btn-change-color"
+            onClick={() => this.handleStyleLines("highlightColor", true, colorsHighlightLignesOneColor)}
+            className="btn-style"
+          >
+
+            <img src={SurLignerLignes1} alt="SurlignerLignes" />
           </button>
 
           <button

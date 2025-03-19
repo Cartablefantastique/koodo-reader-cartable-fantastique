@@ -1,4 +1,4 @@
-import { classes, colors, lines } from "../../constants/themeList";
+import { classes, colors, threeColorlines, twoColorlines } from "../../constants/themeList";
 import Note from "../../models/Note";
 import { showPDFHighlight } from "../fileUtils/pdfUtil";
 declare var window: any;
@@ -150,7 +150,7 @@ function highlightRange(
           : "border-bottom: ") +
         (colorCode.indexOf("color") > -1
           ? colors[colorCode.split("-")[1]] + ";opacity: 1"
-          : `2px solid ${lines[colorCode.split("-")[1]]}`) +
+          : `2px solid ${threeColorlines[colorCode.split("-")[1]]}`) +
         ";left:" +
         (Math.min(rect.left, rect.x) + doc.body.scrollLeft) +
         "px; top:" +

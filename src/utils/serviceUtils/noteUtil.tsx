@@ -1,4 +1,4 @@
-import { classes, colors, threeColorlines, twoColorlines } from "../../constants/themeList";
+import { classes, colors, threeColorlines } from "../../constants/themeList";
 import Note from "../../models/Note";
 import { showPDFHighlight } from "../fileUtils/pdfUtil";
 declare var window: any;

@@ -1,4 +1,4 @@
-import { threeColorlines, twoColorlines, pdfColors } from "../../constants/themeList";
+import { threeColorlines, pdfColors } from "../../constants/themeList";
 import { getPDFIframeDoc } from "../serviceUtils/docUtil";
 
 declare var window: any;

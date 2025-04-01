@@ -635,3 +635,4 @@ app.on("window-all-closed", () => {
 app.on("open-file", (e, pathToFile) => {
   filePath = pathToFile;
 });
+

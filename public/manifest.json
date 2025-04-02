@@ -3,7 +3,7 @@
   "short_name": "MCF Reader",
   "description" : "Reader pour l'association mon cartable fantastique pour faciliter la lecture à des enfants en ayant besoin",
   "start_url" : "/",
-  "display": "minimal-ui", 
+  "display": "standalone", 
   "background_color": "#ffffff",
   "theme_color": "#000000",
   "icons" : [

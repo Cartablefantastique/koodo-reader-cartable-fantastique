@@ -268,8 +268,7 @@ class ThemeList extends React.Component<ThemeListProps, ThemeListState> {
             onClick={() => this.handleStyleLines("", true, threeColorlines)}
             className="btn-style"
           >
-
-            <img src={Lignescouleurs1} alt="ligneCouleur" />
+            <img src={Lignescouleurs1} alt="ligneCouleur"/>
           </button>
 
           <button

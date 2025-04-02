@@ -21,12 +21,14 @@ initSystemFont();
 ReactDOM.render(
 
   <Provider store={store}>
-      <div className="App-footer-container-mobile">
-        <h4>Installer la version mobile</h4> <br />
-        <button id="installButton" style={{ display: 'none' }}>
-          Installer l'application
-        </button>
-     </div>
+<div 
+  className="App-footer-container-mobile">
+  <button id="installButton">
+    Installer l'application mobile
+  </button>
+</div>
+
+     
     <Router />
   </Provider>,
    
@@ -47,6 +49,7 @@ StyleUtil.applyTheme();
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.register();
 
+
 let deferredPrompt;
 
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -58,22 +61,20 @@ window.addEventListener('beforeinstallprompt', (e) => {
   showInstallPromotion();
 });
 
+
 const showInstallPromotion = () => {
   const installButton = document.getElementById('installButton');
-  const mobilApp = document.getElementsByClassName('App-footer-container-mobile');
-
 
   if (installButton) {
     installButton.style.display = 'block';
-    if (mobilApp.length > 0) {
-      (mobilApp[0] as HTMLElement).style.display = "flex";
-  }
+    
     installButton.addEventListener('click', () => {
       // Afficher l'invite d'installation
       deferredPrompt.prompt();
       // Attendre la réponse de l'utilisateur
       deferredPrompt.userChoice.then((choiceResult) => {
         if (choiceResult.outcome === 'accepted') {
+          // L'utilisateur a accepté l'installation
           console.log('User accepted the install prompt');
         } else {
           console.log('User dismissed the install prompt');

@@ -147,24 +147,20 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
       if (title === "Font size") {
         return (
           <p className="general-setting-title">
-            <Trans>{title}</Trans>  :
-
-            <span className="itemValue">{currentValueFontSize}</span>
+            <Trans>{title}</Trans> : <span className="itemValue">{currentValueFontSize}</span>
           </p>
         );
       } else if (title === "Font family") {
         return (
           <p className="general-setting-title">
-            <Trans> {title} </Trans>  :
-            <span className="itemValue">{currentValueFontFamily}</span>
+            <Trans>{title}</Trans> : <span className="itemValue">{currentValueFontFamily}</span>
           </p>
         )
 
       } else if (title === "Line height") {
         return (
           <p className="general-setting-title">
-            <Trans> {title} </Trans> :
-            <span className="itemValue">{currentValueLineHeight}</span>
+            <Trans>{title}</Trans> : <span className="itemValue">{currentValueLineHeight}</span>
           </p>
         )
 
@@ -172,8 +168,7 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
       else if (title === "Text alignment") {
         return (
           <p className="general-setting-title">
-            <Trans> {title} </Trans>  :
-            <span className="itemValue">{currentValueTextAlign}</span>
+            <Trans>{title}</Trans> : <span className="itemValue">{currentValueTextAlign}</span>
           </p>
         )
 
@@ -181,40 +176,35 @@ class IconChoiceList extends React.Component<IconChoiceListProps, IconChoiceList
       else if (title === "Word spacing") {
         return (
           <p className="general-setting-title">
-            <Trans>{title}</Trans> :
-            <span className="itemValue">{currentValueWordSpacing}</span>
+            <Trans>{title}</Trans> : <span className="itemValue">{currentValueWordSpacing}</span>
           </p>
         );
       }
       else if (title === "Letter spacing") {
         return (
           <p className="general-setting-title">
-            <Trans> {title} </Trans>  :
-            <span className="itemValue">{currentValueLetterSpace}</span>
+            <Trans>{title}</Trans> : <span className="itemValue">{currentValueLetterSpace}</span>
           </p>
         )
       }
       else if (title === "Margin") {
         return (
           <p className="general-setting-title">
-            <Trans> {title} </Trans>  :
-            <span className="itemValue">{currentValueMarge}</span>
+            <Trans>{title}</Trans> : <span className="itemValue">{currentValueMarge}</span>
           </p>
         )
       }
       else if (title === "Vitesse de Lecture") {
         return (
           <p className="general-setting-title">
-            <Trans> {title} </Trans>  :
-            <span className="itemValue">{StorageUtil.getReaderConfig("readingRate") || 1}</span>
+            <Trans>{title}</Trans> : <span className="itemValue">{StorageUtil.getReaderConfig("readingRate") || 1}</span>
           </p>
         )
       }
 
       return (
         <p className="general-setting-title">
-          <Trans> {title} </Trans>  :
-          <span className="itemValue">{StorageUtil.getReaderConfig(value)}</span>
+          <Trans>{title}</Trans> : <span className="itemValue">{StorageUtil.getReaderConfig(value)}</span>
         </p>
       );
     };

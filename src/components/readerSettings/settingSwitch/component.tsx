@@ -64,7 +64,7 @@ class SettingSwitch extends React.Component<
   render() {
     return (
       <>
-        <TextToSpeech />
+        {/*<TextToSpeech />*/}
         {/* {readerSettingList.map((item) => (
           <div className="single-control-switch-container" key={item.title}>
             <span className="single-control-switch-title">

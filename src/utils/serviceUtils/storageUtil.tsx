@@ -28,9 +28,9 @@ class StorageUtil {
     // this.setReaderConfig("highlightLines", "resetStyles")
 
     this.setReaderConfig("readerMode", "single");
-    this.setReaderConfigNumber("fontSize", 15)
+    this.setReaderConfigNumber("fontSize", 20)
     this.setReaderConfig("fontFamily", "Arial")
-    this.setReaderConfigNumber("lineHeight", 1.5)
+    this.setReaderConfigNumber("lineHeight", 2)
     this.setReaderConfig("textAlign", "Left")
     this.setReaderConfigNumber("wordSpacing", 0)
     this.setReaderConfigNumber("letterSpacing", 0)
